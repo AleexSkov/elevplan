@@ -1,19 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
-
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>RazorClassLibrary1</RootNamespace>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
-
-
     <ItemGroup>
-        <SupportedPlatform Include="browser"/>
+        <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.1"/>
-    </ItemGroup>
-
 </Project>

@@ -1,41 +1,55 @@
-@using Core.Models
+@page "/elevplaner"
 @inject HttpClient Http
 
-<div class="mb-8">
-    <h2 class="text-2xl font-semibold mb-4">Elev: @Elev.ElevNavn (ID: @Elev.ElevId)</h2>
-    <p class="mb-2"><strong>Skole:</strong> @Elev.Skole</p>
-    <p class="mb-4"><strong>Aftaleform:</strong> @Elev.Aftaleform</p>
+<h3>Elevplaner</h3>
 
-    @foreach (var periode in Elev.Praktikperioder)
-    {
-        <div class="mb-6">
-            <h3 class="text-xl font-medium mb-3">Praktikperiode @periode.PeriodeNummer</h3>
-            <p><strong>Varighed:</strong> @periode.VarighedUger uger</p>
-            <p><strong>Skoleperiode:</strong> @periode.Skoleperiode.VarighedUger uger</p>
-
-            @{
-                var groupedTasks = periode.Opgaver
-                    .GroupBy(t => t.Kategori)
-                    .ToDictionary(g => g.Key, g => g.ToList());
-            }
-
-            @foreach (var kvp in groupedTasks)
-            {
-                <div class="mt-4">
-                    <h4 class="text-lg font-medium mb-2">@kvp.Key</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @foreach (var task in kvp.Value)
-                        {
-                            <TaskCard Task="task" />
-                        }
-                    </div>
-                </div>
-            }
-        </div>
-    }
-</div>
+@if (elevplaner == null)
+{
+    <p>Indlæser elevplaner...</p>
+}
+else if (!elevplaner.Any())
+{
+    <p>Ingen elevplaner fundet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Navn</th>
+            <th>Startdato</th>
+            <th>Slutdato</th>
+            <th>Kommentar</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var plan in elevplaner)
+        {
+            <tr>
+                <td>@plan.Navn</td>
+                <td>@plan.StartDato.ToShortDateString()</td>
+                <td>@plan.SlutDato.ToShortDateString()</td>
+                <td>@plan.Kommentar</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
 
 @code {
-    [Parameter]
-    public Elevplan Elev { get; set; }
+    private List<Elevplan>? elevplaner;
+
+    protected override async Task OnInitializedAsync()
+    {
+        elevplaner = await Http.GetFromJsonAsync<List<Elevplan>>("http://localhost:5102/api/elevplan");
+    }
+
+    public class Elevplan
+    {
+        public string Id { get; set; }
+        public string Navn { get; set; }
+        public DateTime StartDato { get; set; }
+        public DateTime SlutDato { get; set; }
+        public string Kommentar { get; set; }
+    }
 }

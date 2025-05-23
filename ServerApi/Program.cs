@@ -1,15 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Core.Db;
+
+using ServerApi.Interface;
 using ServerApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
-builder.Services.AddSingleton<MongoDbContext>();
-builder.Services.AddSingleton<ElevplanRepository>();
+
+builder.Services.AddSingleton<IElevplan, ElevplanRepository>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>

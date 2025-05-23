@@ -1,32 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
+using ServerApi.Interface;
 using Core.Models;
-using ServerApi.Repository;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ServerApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ElevplanController : ControllerBase
     {
-        private readonly ElevplanRepository _repository;
+        private readonly IElevplan _elevplanService;
 
-        public ElevplanController(ElevplanRepository repository)
+        public ElevplanController(IElevplan elevplanService)
         {
-            _repository = repository;
+            _elevplanService = elevplanService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Elevplan>>> GetAll()
+        public async Task<ActionResult<List<Elevplan>>> GetAll()
         {
-            try
-            {
-                var elevplans = await _repository.GetAllAsync();
-                return Ok(elevplans);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var elevplaner = await _elevplanService.GetAllAsync();
+            return Ok(elevplaner);
         }
     }
 }

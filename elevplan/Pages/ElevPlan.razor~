@@ -1,6 +1,55 @@
-@page "/ElevPlan"
-<h3>ElevPlan</h3>
+@page "/elevplaner"
+@inject HttpClient Http
+
+<h3>Elevplaner</h3>
+
+@if (elevplaner == null)
+{
+    <p>Indlæser elevplaner...</p>
+}
+else if (!elevplaner.Any())
+{
+    <p>Ingen elevplaner fundet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Navn</th>
+            <th>Startdato</th>
+            <th>Slutdato</th>
+            <th>Kommentar</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var plan in elevplaner)
+        {
+            <tr>
+                <td>@plan.Navn</td>
+                <td>@plan.StartDato.ToShortDateString()</td>
+                <td>@plan.SlutDato.ToShortDateString()</td>
+                <td>@plan.Kommentar</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
 
 @code {
-    
+    private List<Elevplan>? elevplaner;
+
+    protected override async Task OnInitializedAsync()
+    {
+        elevplaner = await Http.GetFromJsonAsync<List<Elevplan>>("https://localhost:7140/api/elevplan");
+    }
+
+    public class Elevplan
+    {
+        public string Id { get; set; }
+        public string Navn { get; set; }
+        public DateTime StartDato { get; set; }
+        public DateTime SlutDato { get; set; }
+        public string Kommentar { get; set; }
+    }
 }
