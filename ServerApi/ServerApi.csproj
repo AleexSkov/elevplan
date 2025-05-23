@@ -8,4 +8,7 @@
         <ProjectReference Include="..\Core\Core.csproj" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
 </Project>
