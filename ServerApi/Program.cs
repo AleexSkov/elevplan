@@ -11,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IElevplan, ElevplanRepository>();
+builder.Services.AddSingleton<IAppUser, AppUserRepository>();
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddCors(options =>
 {
