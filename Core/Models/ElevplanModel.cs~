@@ -1,0 +1,6 @@
+namespace RazorClassLibrary1.Models;
+
+public class ElevplanModel
+{
+    
+}

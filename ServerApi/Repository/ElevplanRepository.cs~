@@ -1,0 +1,6 @@
+namespace ServerApi.Repository;
+
+public class ElevplanRepository
+{
+    
+}

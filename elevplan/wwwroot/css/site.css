@@ -1,0 +1,4 @@
+/* Tailwind CSS is included via CDN in Pages/_Layout.cshtml */
+body {
+    font-family: Arial, sans-serif;
+}

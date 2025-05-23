@@ -1,0 +1,6 @@
+@page "/TaskCard"
+<h3>TaskCard</h3>
+
+@code {
+    
+}

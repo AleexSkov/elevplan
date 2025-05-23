@@ -1,0 +1,14 @@
+@using Core.Models
+
+<div class="bg-white shadow-md rounded-lg p-4 border-l-4 border-blue-500">
+    <h5 class="text-base font-semibold">@Task.Beskrivelse</h5>
+    <p class="text-sm text-gray-600"><strong>Ansvarlig:</strong> @Task.Ansvarlig</p>
+    <p class="text-sm text-gray-600"><strong>Initiator:</strong> @Task.Initiator</p>
+    <p class="text-sm text-gray-600"><strong>Tidslinje:</strong> @Task.Tidslinje</p>
+    <p class="text-sm text-gray-600"><strong>Gennemført:</strong> @(Task.Gennemført ? "Ja" : "Nej")</p>
+</div>
+
+@code {
+    [Parameter]
+    public Opgave Task { get; set; }
+}

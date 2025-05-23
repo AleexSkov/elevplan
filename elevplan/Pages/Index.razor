@@ -1,0 +1,38 @@
+@page "/"
+@using Core.Models
+@inject HttpClient Http
+
+<h1 class="text-3xl font-bold mb-6 text-center">Elevplan</h1>
+
+@if (elevplans == null)
+{
+    <p class="text-center">Loading...</p>
+}
+else if (error != null)
+{
+    <p class="text-center text-red-500">@error</p>
+}
+else
+{
+    @foreach (var elev in elevplans)
+    {
+        <ElevPlan Elev="elev" />
+    }
+}
+
+@code {
+    private List<Elevplan> elevplans;
+    private string error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            elevplans = await Http.GetFromJsonAsync<List<Elevplan>>("http://localhost:5000/api/Elevplan");
+        }
+        catch (Exception ex)
+        {
+            error = $"Failed to load data: {ex.Message}";
+        }
+    }
+}

@@ -1,0 +1,41 @@
+@using Core.Models
+@inject HttpClient Http
+
+<div class="mb-8">
+    <h2 class="text-2xl font-semibold mb-4">Elev: @Elev.ElevNavn (ID: @Elev.ElevId)</h2>
+    <p class="mb-2"><strong>Skole:</strong> @Elev.Skole</p>
+    <p class="mb-4"><strong>Aftaleform:</strong> @Elev.Aftaleform</p>
+
+    @foreach (var periode in Elev.Praktikperioder)
+    {
+        <div class="mb-6">
+            <h3 class="text-xl font-medium mb-3">Praktikperiode @periode.PeriodeNummer</h3>
+            <p><strong>Varighed:</strong> @periode.VarighedUger uger</p>
+            <p><strong>Skoleperiode:</strong> @periode.Skoleperiode.VarighedUger uger</p>
+
+            @{
+                var groupedTasks = periode.Opgaver
+                    .GroupBy(t => t.Kategori)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+            }
+
+            @foreach (var kvp in groupedTasks)
+            {
+                <div class="mt-4">
+                    <h4 class="text-lg font-medium mb-2">@kvp.Key</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach (var task in kvp.Value)
+                        {
+                            <TaskCard Task="task" />
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Elevplan Elev { get; set; }
+}

@@ -1,0 +1,6 @@
+namespace ServerApi.Controllers;
+
+public class ElevplanController
+{
+    
+}
