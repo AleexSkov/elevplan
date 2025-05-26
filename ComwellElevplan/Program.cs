@@ -20,3 +20,4 @@ builder.Services.AddScoped(sp =>
 
     return new HttpClient { BaseAddress = new Uri(baseUri) };
 });
+

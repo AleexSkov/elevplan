@@ -39,4 +39,9 @@ app.UseSession();
 app.UseRouting();
 app.UseEndpoints(endpoints => endpoints.MapControllers());
 
+app.UseStaticFiles();
+app.MapFallbackToFile("index.html");
+
+
 app.Run();
+
