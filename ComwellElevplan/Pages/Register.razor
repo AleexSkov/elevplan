@@ -1,4 +1,5 @@
 @page "/register"
+@using Core.Models
 @inject HttpClient Http
 
 <h3>Opret bruger</h3>
@@ -35,6 +36,7 @@
     }
 </EditForm>
 
+
 @code {
     private AppUser newUser = new();
     private string password = "";
@@ -58,7 +60,7 @@
         }
     }
 
-    public class AppUser
+   /* public class AppUser
     {
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
@@ -66,5 +68,5 @@
         public bool MustChangePassword { get; set; } = true;
         public string? Name { get; set; }
         public DateTime CreatedAt { get; set; }
-    }
+    }*/
 }

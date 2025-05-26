@@ -13,6 +13,7 @@ namespace Core.Models
         public string Role { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        
         public bool MustChangePassword { get; set; } = true;
         public string? Name { get; set; }
     }
