@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
 <div class="layout">
   <!-- Sidebar -->
   <aside class="sidebar">
@@ -6,6 +9,7 @@
       <div class="logo">
         <img src="https://img.icons8.com/ios-filled/24/000000/chef-hat.png" />
       </div>
+      <div class="user-display">@userName - @userRole</div>
     </div>
     <nav class="menu">
       <a href="/dashboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/home.png" />Dashboard</a>
@@ -19,18 +23,17 @@
       <div class="menu-footer">
         <a href="/opretuser"><img src="https://img.icons8.com/ios-filled/20/ffffff/add-administrator.png" />(HR) Opret Bruger</a>
         <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/settings.png"/>Indstillinger</a>
-        <!--<a @onclick="Logout" style="cursor:pointer">
+        <a @onclick="Logout" style="cursor:pointer">
           <img src="https://img.icons8.com/ios-filled/20/ffffff/exit.png"/> Log ud
-        </a>-->
+        </a>
       </div>
     </nav>
-    
   </aside>
 
   <!-- Main content -->
   <main class="main">
     <header class="topbar">
-      <h2> </h2>
+      <h2></h2>
       <div class="actions">
         <div class="notifications">
           <img src="https://img.icons8.com/ios-filled/20/ffffff/bell.png" />
@@ -46,10 +49,19 @@
   </main>
 </div>
 
-
-
 @code {
-  
-  
- 
+  private string? userName;
+  private string? userRole;
+
+  protected override async Task OnInitializedAsync()
+  {
+    userName = await JS.InvokeAsync<string>("localStorage.getItem", "userName");
+    userRole = await JS.InvokeAsync<string>("localStorage.getItem", "userRole");
+  }
+
+  private async Task Logout()
+  {
+    await JS.InvokeVoidAsync("localStorage.clear");
+    Nav.NavigateTo("/");
+  }
 }

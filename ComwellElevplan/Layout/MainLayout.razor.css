@@ -12,39 +12,45 @@
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .branding {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem 0.5rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex-direction: column;
+    text-align: center;
 }
 
 .logo {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     background-color: white;
-    border-radius: 9999px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.mainTitle {
-    font-size: 1rem;
-    color: #d1d5db;
+.user-info {
+    margin-top: 0.5rem;
 }
 
-.subtitle {
-    font-size: 0.75rem;
-    color: #d1d5db;
+.user-info span {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.user-info small {
+    font-size: 0.8rem;
+    color: #ccc;
 }
 
 .menu {
     flex-grow: 1;
-    padding: 0 1rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -72,37 +78,27 @@
 }
 
 .menu-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1rem;
-    margin-top: 1rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.user {
-    padding: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+.logout-link {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    cursor: pointer;
 }
 
-.avatar {
-    width: 40px;
-    height: 40px;
-    background-color: #9ca3af;
-    border-radius: 9999px;
-}
-
-.name {
-    font-weight: 500;
-    font-size: 0.875rem;
-}
-
-.role {
-    font-size: 0.75rem;
-    color: #d1d5db;
+.logout-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Main */
@@ -155,10 +151,6 @@
     font-size: 0.875rem;
     border: none;
     cursor: pointer;
-}
-
-.new-button:hover {
-    background-color: #aa8d65;
 }
 
 .content {

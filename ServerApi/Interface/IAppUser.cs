@@ -12,5 +12,9 @@ namespace ServerApi.Interface
         Task<AppUser?> GetByEmailAsync(string email);
         Task CreateAsync(AppUser user);
         Task<bool> EmailExistsAsync(string email);
+        
+        Task UpdateAsync(ObjectId id, AppUser updatedUser);
+
+       
     }
 }
