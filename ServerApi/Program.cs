@@ -12,6 +12,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IElevplan, ElevplanRepository>();
 builder.Services.AddSingleton<IAppUser, AppUserRepository>();
+
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 
