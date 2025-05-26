@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   build:
@@ -22,9 +23,11 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      # 1. Byg Blazor og læg det over i wwwroot
       - name: Publish Blazor WebAssembly
         run: dotnet publish ./ComwellElevplan/ComwellElevplan.csproj -c Release -o ../ServerApi/wwwroot
 
+      # 2. Byg og udgiv ServerApi
       - name: Publish Server API
         run: dotnet publish ./ServerApi/ServerApi.csproj -c Release -o ./publish
 
@@ -46,6 +49,7 @@ jobs:
           name: elevplan-app
           path: ./publish
 
+      # 3. Login til Azure med Service Principal
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -53,8 +57,8 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_94541A90CBE2472A9CBB10181A4FB5A6 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_66E59D19EAD64930BE01CACC487E1CA4 }}
           auth-type: SERVICE_PRINCIPAL
-      
-      
+
+      # 4. Deploy til Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
