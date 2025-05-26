@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -23,17 +23,21 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      # 1. Byg og kopiér Blazor WebAssembly til ServerApi/wwwroot
+      - name: Publish Blazor WebAssembly (ComwellElevplan)
+        run: dotnet publish ./ComwellElevplan/ComwellElevplan.csproj -c Release -o ../ServerApi/wwwroot
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+      # 2. Byg og publicer Server API til ./publish
+      - name: Publish Server API
+        run: dotnet publish ./ServerApi/ServerApi.csproj -c Release -o ./publish
 
+      # 3. Upload artifact
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ./publish
+
 
   deploy:
     runs-on: windows-latest
