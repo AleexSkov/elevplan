@@ -1,0 +1,235 @@
+.dashboard-chef-main {
+    background: #fff;
+    border-radius: 1.4rem;
+    margin: 2rem auto;
+    max-width: 1250px;
+    padding: 2.5rem 2.1rem 3rem 2.1rem;
+    box-shadow: 0 10px 36px rgba(24, 43, 57, 0.11);
+}
+
+.chef-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #aa8d65;
+    padding-bottom: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+.chef-icon { font-size: 2.2rem; vertical-align: middle; }
+.subtitle {
+    font-weight: 700;
+    color: #aa8d65;
+    margin-top: 0.4rem;
+}
+.chef-filters select {
+    border: 1.3px solid #182b39;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    padding: 0.4rem 0.9rem;
+    margin-left: 0.6rem;
+    margin-bottom: 0.2rem;
+}
+
+/* Notifikationer */
+.chef-notifications {
+    background: #f7f8f9;
+    border-radius: 1.1rem;
+    padding: 2rem 1.3rem 1.4rem 1.3rem;
+    margin-bottom: 2rem;
+}
+.notif-icon::before {
+    content: url("data:image/svg+xml;utf8,<svg ...>"); /* indsæt bell svg her hvis du vil */
+    vertical-align: middle;
+}
+.notif-badge {
+    font-weight: 700;
+    border-radius: 1rem;
+    padding: 0.4rem 1.3rem;
+    margin-right: 0.7rem;
+    font-size: 1.1rem;
+    display: inline-block;
+}
+.notif-badge.deadline { background: rgba(170, 141, 101, 0.94); color: #fff; }
+.notif-badge.feedback { background: rgba(22, 100, 166, 0.92); color: #fff; }
+.notif-badge.inaktiv { background: rgba(221, 51, 51, 0.9); color: #fff; }
+
+.chef-progress h2 .progress-icon::before {
+    content: url("data:image/svg+xml;utf8,<svg ...>");
+    vertical-align: middle;
+}
+
+/* Table styling */
+.students-table {
+    width: 100%;
+    border-spacing: 0 0.7rem;
+    margin-bottom: 2.2rem;
+}
+.students-table th { text-align: left; font-size: 1.18rem; color: #182b39; }
+.students-table td { background: #f6f8fa; border-radius: 0.6rem; padding: 0.6rem 0.7rem; font-size: 1.1rem;}
+.student-name { font-weight: 700; }
+.badge { border-radius: 0.8rem; font-weight: 700; padding: 0.25em 1em; font-size: 1rem; }
+.badge.aktiv { background: #182b39; color: #fff; }
+.badge.inaktiv { background: #aa8d65; color: #fff; }
+.progressbar {
+    height: 11px;
+    background: #e5e6e9;
+    border-radius: 1.2em;
+    overflow: hidden;
+    margin-bottom: 2px;
+    margin-right: 0.8em;
+    width: 120px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #182b39 20%, #aa8d65 100%);
+}
+.progress-percent { margin-left: 0.4em; color: #aa8d65;}
+
+.chef-filters select {
+    border: 1.3px solid #182b39;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    padding: 0.4rem 0.9rem;
+    margin-left: 0.6rem;
+    margin-bottom: 0.2rem;
+}
+
+.chef-filters .search-input {
+    border: 1.3px solid #182b39;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    padding: 0.4rem 0.9rem;
+    margin-right: 0.6rem;
+    margin-bottom: 0.2rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.chef-filters .search-input:focus {
+    border-color: #aa8d65;
+    box-shadow: 0 0 0 2px #e8dcc6;
+}
+
+.card {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 6px 24px rgba(24, 43, 57, 0.09);
+    padding: 2rem 1.6rem 1.5rem 1.6rem;
+    margin-bottom: 2.2rem;
+    border: 1.5px solid #ede7dd;
+}
+
+.chef-milestones h2 {
+    margin-bottom: 1.5rem;
+}
+
+.mile-list {
+    display: flex;
+    gap: 1.3rem;
+    flex-wrap: wrap;
+}
+
+.mile-item {
+    background: #fcf9f4;
+    border: 1.2px solid #aa8d65;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    min-width: 190px;
+    box-shadow: 0 2px 8px rgba(170, 141, 101, 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.mile-title {
+    font-weight: 700;
+    font-size: 1.09rem;
+    color: #182b39;
+    margin-bottom: 0.4em;
+}
+.mile-date {
+    color: #aa8d65;
+    font-size: 0.97rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 6px 24px rgba(24, 43, 57, 0.09);
+    padding: 2.1rem 1.7rem 1.7rem 1.7rem;
+    margin-bottom: 2.2rem;
+    border: 1.5px solid #ede7dd;
+}
+
+.table-card {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 6px 24px rgba(24, 43, 57, 0.08);
+    border: 1.5px solid #ede7dd;
+    padding: 0;
+    margin-bottom: 2.2rem;
+    overflow: hidden;
+}
+
+.table-card-header {
+    background: #f3f4f8;
+    border-bottom: 1.5px solid #ede7dd;
+    padding: 1.6rem 2rem 1rem 2rem;
+}
+
+.table-card-header h2 {
+    margin: 0;
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #182b39;
+}
+
+.students-table {
+    width: 100%;
+    border-spacing: 0 0.7rem;
+    margin: 0;
+}
+
+.students-table th {
+    background: #f9fafb;
+    font-size: 1.18rem;
+    color: #182b39;
+    font-weight: 800;
+    padding: 1.1rem 0.8rem;
+    letter-spacing: 0.01em;
+}
+
+.students-table tr th:first-child {
+    border-top-left-radius: 1.1rem;
+}
+.students-table tr th:last-child {
+    border-top-right-radius: 1.1rem;
+}
+
+
+.card {
+    background: #fff;
+    border-radius: 1.4rem;
+    box-shadow: 0 10px 36px rgba(24, 43, 57, 0.11);
+    padding: 1.7rem 2rem 2rem 2rem;
+    margin-bottom: 2.2rem;
+}
+
+
+.students-table thead tr th {
+    background: #182b39;
+    font-size: 1.3rem;
+    color: #ffffff;
+    font-weight: 800;
+    padding: 1.2rem 0.8rem;
+    border-bottom: 2.5px solid #ede7dd;
+    /* Afrunding på hjørner: */
+}
+.students-table thead tr th:first-child {
+    border-top-left-radius: 1.1rem;
+}
+.students-table thead tr th:last-child {
+    border-top-right-radius: 1.1rem;
+}
+

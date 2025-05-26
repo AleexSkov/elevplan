@@ -1,0 +1,125 @@
+@page "/forum"
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Forum UI -->
+    <div class="flex h-[calc(100vh-64px)] bg-gray-50">
+        <!-- Topic List -->
+        <aside class="w-72 border-r border-gray-200 p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-[rgb(24,43,57)]">Topics</h2>
+                <button class="text-sm bg-[rgb(24,43,57)] text-white px-2 py-1 rounded hover:bg-opacity-90">+ Nyt topic</button>
+            </div>
+            <input type="text" placeholder="Søg topics..." class="w-full p-2 mb-4 border border-gray-300 rounded">
+            <ul class="space-y-2">
+                <li class="bg-gray-100 p-2 rounded cursor-pointer">
+                    <p class="font-medium text-[rgb(24,43,57)]"># Køkkenteknikker</p>
+                    <p class="text-sm text-gray-500">Seneste: Tips til knivskæring...</p>
+                </li>
+                <li class="p-2 rounded cursor-pointer hover:bg-gray-100">
+                    <p class="font-medium text-[rgb(24,43,57)]"># Opskrifter</p>
+                    <p class="text-sm text-gray-500">Seneste: Ny sauce opskrift...</p>
+                </li>
+                <li class="p-2 rounded cursor-pointer hover:bg-gray-100">
+                    <p class="font-medium text-[rgb(24,43,57)]"># Hygiejne</p>
+                    <p class="text-sm text-gray-500">Seneste: Opdaterede retningslinjer...</p>
+                </li>
+                <li class="p-2 rounded cursor-pointer hover:bg-gray-100">
+                    <p class="font-medium text-[rgb(24,43,57)]"># Inspiration</p>
+                    <p class="text-sm text-gray-500">Seneste: Ny opgave uploaded...</p>
+                </li>
+                <li class="p-2 rounded cursor-pointer hover:bg-gray-100">
+                    <p class="font-medium text-[rgb(24,43,57)]"># Generelt</p>
+                    <p class="text-sm text-gray-500">Seneste: Plan for næste uge...</p>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Forum Content -->
+        <main class="flex-1 p-6 flex flex-col">
+            <div class="border-b pb-4 mb-4">
+                <h2 class="text-2xl font-semibold text-[rgb(24,43,57)]"># Inspiration</h2>
+                <p class="text-sm text-gray-500">Del dine opgaver og få inspiration fra andre kokkeelever</p>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="bg-white p-6 rounded-lg shadow-lg border mb-6 transform hover:scale-105 transition-transform duration-300">
+                <h3 class="text-xl font-semibold text-[rgb(24,43,57)] mb-4">Upload din opgave</h3>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Titel på opgaven..." class="w-full p-3 border rounded-lg focus:outline-none">
+                    <textarea placeholder="Beskrivelse af opgaven..." class="w-full p-3 border rounded-lg focus:outline-none resize-none h-24"></textarea>
+                    <div class="flex items-center gap-3">
+                        <label class="bg-[#f0c14b] text-[rgb(24,43,57)] px-4 py-2 rounded-lg cursor-pointer hover:bg-yellow-400 transition-colors duration-200">
+                            <span>Vælg fil (billede/PDF)</span>
+                            <input type="file" accept="image/*,application/pdf" class="hidden">
+                        </label>
+                        <span class="text-sm text-gray-500">Maks. 5MB</span>
+                    </div>
+                    <button class="bg-[rgb(24,43,57)] text-white px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors duration-200">Upload og del</button>
+                </div>
+            </div>
+
+            <!-- Shared Tasks Section -->
+            <div class="flex-1 space-y-6 overflow-y-auto">
+                <!-- Shared Task Card -->
+                <div class="bg-white p-4 rounded-lg shadow-md border transform hover:scale-102 transition-transform duration-200">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                        <div>
+                            <p class="font-medium text-[rgb(24,43,57)]">Emma Nielsen</p>
+                            <p class="text-xs text-gray-500">8. maj 2025, 10:30</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                            <img src="https://via.placeholder.com/150" alt="Task Image" class="object-cover w-full h-full">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-[rgb(24,43,57)]">Perfekt anrettet dessert</h4>
+                            <p class="text-[rgb(24,43,57)] mb-2">Jeg arbejdede på præcision i anretningen – hvad synes I? 🍰</p>
+                            <div class="flex gap-2">
+                                <button class="text-sm text-gray-500 hover:text-[rgb(24,43,57)]"><i class="far fa-comment"></i> 4 kommentarer</button>
+                                <button class="text-sm text-gray-500 hover:text-[rgb(24,43,57)]"><i class="far fa-thumbs-up"></i> 8 likes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shared Task Card -->
+                <div class="bg-white p-4 rounded-lg shadow-md border transform hover:scale-102 transition-transform duration-200">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                        <div>
+                            <p class="font-medium text-[rgb(24,43,57)]">Anders Jensen</p>
+                            <p class="text-xs text-gray-500">8. maj 2025, 09:45</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <span class="text-gray-500">PDF</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-[rgb(24,43,57)]">Menuplan for uge 19</h4>
+                            <p class="text-[rgb(24,43,57)] mb-2">Her er min foreslåede menuplan – feedback er velkommen! 📋</p>
+                            <div class="flex gap-2">
+                                <button class="text-sm text-gray-500 hover:text-[rgb(24,43,57)]"><i class="far fa-comment"></i> 2 kommentarer</button>
+                                <button class="text-sm text-gray-500 hover:text-[rgb(24,43,57)]"><i class="far fa-thumbs-up"></i> 5 likes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[rgb(24,43,57)] text-white text-sm text-center py-4">
+        © 2025 Comwell KokkeelevPortalen
+    </footer>
+</body>
+</html>

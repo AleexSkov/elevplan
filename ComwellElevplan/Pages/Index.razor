@@ -1,0 +1,52 @@
+@page "/"
+@layout PublicLayout
+@inject NavigationManager Nav
+
+<div class="homepage">
+    <!-- Hero section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="brand">
+                <span>Comwell</span>
+                <span class="sub">HOTELS</span>
+            </div>
+            <h1>Én platform for hele Comwell</h1>
+            <p class="lead">Elev. Køkkenchef. HR. Kokkefaglærer. Sammen på ét sted.</p>
+            <p class="subtle">Professionel udvikling. Faglig kvalitet. Personlig vejledning.</p>
+        </div>
+    </section>
+
+    <!-- Login & Image section -->
+    <section class="login-section">
+        <div class="login-container">
+            <div class="login-box">
+                <h2>Log ind på din konto</h2>
+                <LoginForm />
+            </div>
+            <div class="login-image">
+                <img src="https://media.comwell.com/cdn/xZdq01/skaldyrsaften-borupgaard-01098.jpeg?d=15376"
+                     alt="Inspiration" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Features section -->
+    <section class="features">
+        <div class="feature-card">
+            <h3>📋 Din Elevplan</h3>
+            <p>Se dine moduler, mål og fremdrift i realtid – opdateret af dig og din vejleder.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🧠 Quiz & Test</h3>
+            <p>Test din viden, vis din forståelse og kom på leaderboardet med dine resultater.</p>
+        </div>
+        <div class="feature-card">
+            <h3>💬 Feedback & Kommunikation</h3>
+            <p>Få og giv feedback – chat med køkkenchef eller HR og følg din udvikling tæt.</p>
+        </div>
+    </section>
+</div>
+
+@code {
+}
