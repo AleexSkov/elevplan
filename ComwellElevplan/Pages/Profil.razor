@@ -1,0 +1,36 @@
+@page "/Profil"
+<div class="profile-card">
+    <div class="header">
+        <h2>Min Profil</h2>
+    </div>
+
+    <!--<div class="image-upload">
+        <img id="preview" src="@profileImageUrl" alt="Profilbillede"
+             onerror="this.onerror=null;this.src='https://img.icons8.com/ios-filled/100/000000/user-male-circle.png';" />
+
+        <label for="file-upload" class="edit-icon">
+            <img src="https://img.icons8.com/ios-filled/20/ffffff/edit.png" alt="Rediger" />
+        </label>
+
+        <InputFile id="file-upload" OnChange="OnImageSelected" accept="image/*" style="display:none;" />
+    </div>-->
+
+    <form class="form">
+        <label>Fornavn</label>
+        <input type="text" placeholder="Indtast fornavn" />
+
+        <label>Efternavn</label>
+        <input type="text" placeholder="Indtast efternavn" />
+
+        <label>Telefonnummer</label>
+        <input type="text" placeholder="+45 12 34 56 78" />
+
+        <label>Email</label>
+        <input type="email" placeholder="navn@mail.dk" />
+
+        <label>Adresse</label>
+        <input type="text" placeholder="Gade, postnr. og by" />
+
+        <button type="submit">Gem ændringer</button>
+    </form>
+</div>

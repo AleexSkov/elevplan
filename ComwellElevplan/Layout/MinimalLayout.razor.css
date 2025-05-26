@@ -1,0 +1,87 @@
+.login-box {
+    background: white;
+    max-width: 410px;
+    margin: 5rem auto 0 auto;
+    padding: 2.5rem 2rem;
+    border-radius: 1.2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.11);
+    border: 1px solid #ece8e0;
+    animation: fadeIn 1s ease;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.login-box h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #182b39;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    color: #222;
+}
+
+.form-control, .form-group input {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 1px solid #d4d8dd;
+    border-radius: 0.6rem;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #aa8d65;
+    box-shadow: 0 0 0 2px #f3e9da;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background: linear-gradient(90deg, #182b39 0%, #aa8d65 100%);
+    color: #fff;
+    font-size: 1.08rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 0.6rem;
+    padding: 0.95rem;
+    margin-top: 0.7rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(90deg, #aa8d65 0%, #182b39 100%);
+}
+
+.validation-message,
+.validation-summary ul {
+    color: #d23b3b;
+    font-size: 0.93rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.4rem;
+    list-style: none;
+    padding-left: 0;
+}
+
+@media (max-width: 600px) {
+    .login-box {
+        padding: 1.2rem 0.4rem;
+        max-width: 96vw;
+    }
+}

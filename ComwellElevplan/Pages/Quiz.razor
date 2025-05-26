@@ -1,0 +1,110 @@
+@page "/quiz"
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Quiz UI -->
+    <div class="flex h-[calc(100vh-64px)] bg-gray-50">
+        <!-- Main Content -->
+        <main class="flex-1 p-6 flex flex-col">
+            <div class="border-b pb-4 mb-4">
+                <h2 class="text-2xl font-semibold" style="color: rgb(24, 43, 57)">Quiz</h2>
+                <p class="text-sm text-gray-500">Test din viden og udfordr dig selv!</p>
+            </div>
+
+            <!-- Welcome and Stats -->
+            <div class="bg-white p-6 rounded-lg shadow-md border mb-6">
+                <h3 class="text-xl font-semibold" style="color: rgb(24, 43, 57)">Velkommen, Anders!</h3>
+                <p class="text-[rgb(24, 43, 57)] mb-2">Du har taget <strong>5</strong> quizzer og har en gennemsnitlig score på <strong>82%</strong>.</p>
+                <p class="text-sm text-gray-500">Vælg et delmål og start din næste udfordring!</p>
+            </div>
+
+            <!-- Goal Selection -->
+            <div class="bg-white p-6 rounded-lg shadow-md border mb-6">
+                <h3 class="text-xl font-semibold" style="color: rgb(24, 43, 57)">Vælg et delmål</h3>
+                <select class="w-full p-3 border rounded-lg focus:outline-none mt-2">
+                    <option value="">Vælg et delmål...</option>
+                    <option value="køkkenteknikker">Grundlæggende køkkenteknikker (85%)</option>
+                    <option value="menuplanlægning">Menuplanlægning (42%)</option>
+                    <option value="køkkenhygiejne">Køkkenhygiejne (75%)</option>
+                    <option value="samlet">Samlet uddannelsesforløb (68%)</option>
+                </select>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="bg-white p-6 rounded-lg shadow-md border mb-6 flex-1 overflow-y-auto">
+                <h3 class="text-xl font-semibold" style="color: rgb(24, 43, 57)">Spørgsmål 1 af 5</h3>
+                <p class="text-[rgb(24, 43, 57)] mb-4">Hvad er den korrekte teknik til at skære et løg?</p>
+                <div class="space-y-3">
+                    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200">
+                        <input type="radio" name="question1" class="accent-[rgb(205, 170, 125)] w-5 h-5">
+                        <span class="text-[rgb(24, 43, 57)]">Skær direkte gennem midten</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200">
+                        <input type="radio" name="question1" class="accent-[rgb(205, 170, 125)] w-5 h-5">
+                        <span class="text-[rgb(24, 43, 57)]">Skær i tern og fjern skallen først</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200">
+                        <input type="radio" name="question1" class="accent-[rgb(205, 170, 125)] w-5 h-5">
+                        <span class="text-[rgb(24, 43, 57)]">Skær i fine skiver efter at have halveret den</span>
+                    </label>
+                </div>
+                <div class="mt-6">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-[rgb(205, 170, 125)] h-2.5 rounded-full transition-all duration-500" style="width: 20%"></div>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">Progression: <span class="font-bold" style="color: rgb(24, 43, 57)">1/5</span></p>
+                </div>
+                <button class="mt-6 bg-[rgb(24, 43, 57)] text-white px-6 py-3 rounded-lg hover:bg-opacity-90 transition-colors duration-200">Næste</button>
+            </div>
+
+            <!-- Score History -->
+            <div class="bg-white p-6 rounded-lg shadow-md border mb-6">
+                <h3 class="text-xl font-semibold" style="color: rgb(24, 43, 57)">Din scorehistorik</h3>
+                <table class="w-full text-[rgb(24, 43, 57)] mt-4">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="py-2 text-left">Dato</th>
+                            <th class="py-2 text-left">Delmål</th>
+                            <th class="py-2 text-left">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b hover:bg-gray-100 transition-colors duration-200">
+                            <td class="py-2">7. maj 2025</td>
+                            <td>Køkkenteknikker</td>
+                            <td>88%</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-100 transition-colors duration-200">
+                            <td class="py-2">5. maj 2025</td>
+                            <td>Køkkenhygiejne</td>
+                            <td>79%</td>
+                        </tr>
+                        <tr class="hover:bg-gray-100 transition-colors duration-200">
+                            <td class="py-2">3. maj 2025</td>
+                            <td>Menuplanlægning</td>
+                            <td>65%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Result Section (Hidden by default, shown after completion) -->
+            <div class="hidden bg-white p-6 rounded-lg shadow-md border mb-6 animate-pulse" id="resultSection">
+                <h3 class="text-2xl font-semibold" style="color: rgb(24, 43, 57)">Tillykke, Anders!</h3>
+                <p class="text-[rgb(24, 43, 57)] mb-4">Din score: <strong style="color: rgb(205, 170, 125)">85%</strong></p>
+                <p class="text-sm text-gray-500">Godt arbejde! Øv dig på de områder, hvor du kan forbedre dig.</p>
+                <button class="mt-4 bg-[rgb(24, 43, 57)] text-white px-6 py-3 rounded-lg hover:bg-opacity-90 transition-colors duration-200">Prøv igen</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[rgb(24, 43, 57)] text-white text-sm text-center py-4">
+        © 2025 Comwell KokkeelevPortalen
+    </footer>
+</body>
+</html>

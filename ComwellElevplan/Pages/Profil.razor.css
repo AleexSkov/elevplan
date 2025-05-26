@@ -1,0 +1,94 @@
+/* Profil.razor.css */
+
+.profile-card {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-card .header {
+    background-color: rgb(24, 43, 57);
+    color: white;
+    padding: 1rem 2rem;
+    width: 100%;
+    text-align: center;
+    border-radius: 0.5rem 0.5rem 0 0;
+    margin-bottom: 1rem;
+}
+
+.image-upload {
+    position: relative;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image-upload img#preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 3px solid rgb(170, 141, 101);
+}
+
+.edit-icon {
+    position: absolute;
+    bottom: 0;
+    right: 40%;
+    transform: translateX(50%);
+    background: white;
+    border-radius: 9999px;
+    padding: 0.3rem;
+    cursor: pointer;
+    border: 2px solid rgb(170, 141, 101);
+}
+
+.edit-icon img {
+    width: 16px;
+    height: 16px;
+}
+
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: rgb(24, 43, 57);
+}
+
+.form input[type="text"],
+.form input[type="email"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}
+
+button.save-button {
+    background-color: rgb(170, 141, 101);
+    color: rgb(24, 43, 57);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+
+button.save-button:hover {
+    background-color: #c6a26e;
+}
