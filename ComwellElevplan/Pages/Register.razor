@@ -60,7 +60,7 @@
         generatedPassword = GenerateRandomPassword();
         newUser.PasswordHash = generatedPassword;
 
-        var response = await Http.PostAsJsonAsync("http://localhost:5102/api/auth/register", newUser);
+        var response = await Http.PostAsJsonAsync("api/auth/register", newUser);
 
         if (response.IsSuccessStatusCode)
         {

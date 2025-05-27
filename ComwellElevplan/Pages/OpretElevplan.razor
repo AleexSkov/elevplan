@@ -70,7 +70,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        elevplaner = await Http.GetFromJsonAsync<List<Elevplan>>("http://localhost:5102/api/elevplan");
+        elevplaner = await Http.GetFromJsonAsync<List<Elevplan>>("api/elevplan");
     }
 }
 
