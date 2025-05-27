@@ -1,0 +1,72 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - Elevplan
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      # 1. Byg og kopiér Blazor WebAssembly til ServerApi/wwwroot
+      - name: Publish Blazor WebAssembly (ComwellElevplan)
+        run: dotnet publish ./ComwellElevplan/ComwellElevplan.csproj -c Release -o ../ServerApi/wwwroot
+
+      # 2. Byg og publicer Server API til ./publish
+      - name: Publish Server API
+        run: dotnet publish ./ServerApi/ServerApi.csproj -c Release -o ./publish
+
+      # 3. Upload artifact
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
+
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_29F6A78BC2EA4FFE8AA8942AE162A0E0 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0549E526DE1A470584E33EFD09CAE61E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0F55C19F67324E708AB47AFE4DC06C47 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'Elevplan'
+          slot-name: 'Production'
+          package: .
+          
