@@ -13,7 +13,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped(sp =>
 {
     var baseUri = builder.HostEnvironment.IsDevelopment()
-        ? "https://localhost:5102/" // ← din API-port lokalt
+        ? "http://localhost:5102/" // ← din API-port lokalt
         : builder.HostEnvironment.BaseAddress; // ← på Azure
 
     return new HttpClient { BaseAddress = new Uri(baseUri) };
