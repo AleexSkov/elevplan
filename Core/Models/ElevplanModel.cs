@@ -13,7 +13,7 @@ namespace Core.Models
         public string elev_navn { get; set; } = string.Empty;
         public string aftaleform { get; set; } = string.Empty;
         public string skole { get; set; } = string.Empty;
-        public List<Praktikperiode> praktikperioder { get; set; } = new();
+        public List<Praktikperiode> praktikperioder { get; set; } = new(); 
         public DateTime oprettet_dato { get; set; }
         public DateTime opdateret_dato { get; set; }
     }

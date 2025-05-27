@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Models;
 
-namespace Core.Interface
+namespace Core.Interface 
 {
     public interface IElevplan
     {
