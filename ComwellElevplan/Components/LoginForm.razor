@@ -56,6 +56,12 @@
             return;
         }
 
+        // Gem brugerdata i localStorage
+        await JS.InvokeVoidAsync("localStorage.setItem", "userName", result.Name);
+        await JS.InvokeVoidAsync("localStorage.setItem", "userRole", result.Role);
+        await JS.InvokeVoidAsync("localStorage.setItem", "mustChangePassword", result.MustChangePassword.ToString());
+
+        // Naviger baseret på om brugeren skal ændre kode
         if (result.MustChangePassword)
         {
             Nav.NavigateTo("/changepassword");
@@ -64,10 +70,6 @@
         {
             Nav.NavigateTo("/dashboard");
         }
-        
-        await JS.InvokeVoidAsync("localStorage.setItem", "userName", result.Name);
-        await JS.InvokeVoidAsync("localStorage.setItem", "userRole", result.Role);
-        Nav.NavigateTo("/dashboard");
-
     }
+
 }
