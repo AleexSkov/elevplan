@@ -96,6 +96,9 @@
     border: 1px solid #f3f4f6;
     animation: fadeIn 1.2s ease-out forwards;
     opacity: 0;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 .login-box h2 {

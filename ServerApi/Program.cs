@@ -41,6 +41,7 @@ app.UseSession();
 app.UseRouting();
 app.UseEndpoints(endpoints => endpoints.MapControllers());
 
+app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.MapFallbackToFile("index.html");
 

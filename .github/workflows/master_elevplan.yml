@@ -25,18 +25,28 @@ jobs:
 
       # 1. Byg og kopiér Blazor WebAssembly til ServerApi/wwwroot
       - name: Publish Blazor WebAssembly (ComwellElevplan)
-        run: dotnet publish ./ComwellElevplan/ComwellElevplan.csproj -c Release -o ../ServerApi/wwwroot
+        run: dotnet publish ComwellElevplan/ComwellElevplan.csproj -c Release -o frontend_dist
 
-      # 2. Byg og publicer Server API til ./publish
-      - name: Publish Server API
-        run: dotnet publish ./ServerApi/ServerApi.csproj -c Release -o ./publish
+      # Sørg for wwwroot findes i ServerApi
+      - name: Ensure wwwroot folder exists
+        run: mkdir ServerApi/wwwroot
+        
+      # Kopiér hele wwwroot fra frontend build til ServerApi
+      - name: Copy Blazor output to API wwwroot
+        run: xcopy /E /Y /I frontend_dist\wwwroot ServerApi\wwwroot
+        
+        
+        # Publish kun ServerApi
+      - name: Publish ServerApi
+        run: dotnet publish ServerApi/ServerApi.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+
 
       # 3. Upload artifact
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./publish
+          path: ${{env.DOTNET_ROOT}}/myapp
 
 
   deploy:

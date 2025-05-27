@@ -1,5 +1,6 @@
 @page "/"
 @layout PublicLayout
+@using ComwellElevplan.Components
 @inject NavigationManager Nav
 
 <div class="homepage">
@@ -20,7 +21,7 @@
     <!-- Login & Image section -->
     <section class="login-section">
         <div class="login-container">
-            <div class="login-box">
+            <div class="login-box fade-in">
                 <h2>Log ind på din konto</h2>
                 <LoginForm />
             </div>
@@ -49,4 +50,5 @@
 </div>
 
 @code {
+    // Intet her mere – login håndteres i LoginForm
 }

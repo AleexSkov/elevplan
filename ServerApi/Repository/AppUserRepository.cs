@@ -45,5 +45,14 @@ namespace ServerApi.Repository
         {
             return await _appUserCollection.Find(u => u.Email == email).AnyAsync();
         }
+        
+        public async Task UpdateAsync(ObjectId id, AppUser updatedUser)
+        {
+            var filter = Builders<AppUser>.Filter.Eq(u => u.Id, id); 
+            await _appUserCollection.ReplaceOneAsync(filter, updatedUser);
+        }
+
+
+
     }
 }

@@ -1,0 +1,78 @@
+.login-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f3f4f6;
+    animation: fadeIn 1.2s ease-out forwards;
+    opacity: 0;
+}
+
+.login-box h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: box-shadow 0.2s;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 2px #aa8d65;
+    border-color: #aa8d65;
+    outline: none;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: rgb(24, 43, 57);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-color: #aa8d65;
+}
+
+.login-links {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.login-links a {
+    color: rgb(24, 43, 57);
+    text-decoration: none;
+    margin: 0 0.5rem;
+}
+
+.login-links a:hover {
+    color: #aa8d65;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}

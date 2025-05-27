@@ -1,0 +1,103 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Wrapper der centrerer alt */
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Den hvide formularboks */
+.form-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 480px;
+}
+
+/* Overskrift */
+.form-container h3 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: #182b39;
+}
+
+/* Felter */
+.mb-3 {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-control {
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #aa8d65;
+}
+
+/* Knapper */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #182b39;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #101e29;
+}
+
+.btn-secondary {
+    background-color: #d2ab76;
+    color: #182b39;
+}
+
+.btn-secondary:hover {
+    background-color: #c49a61;
+}
+
+/* Info besked */
+.alert-info {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    border-radius: 6px;
+    text-align: center;
+}

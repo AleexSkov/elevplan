@@ -1,0 +1,73 @@
+@using Core.Models
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p class="text-danger">@message</p>
+}
+
+<EditForm Model="loginData" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Email</label>
+        <InputText @bind-Value="loginData.Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Password</label>
+        <InputText @bind-Value="loginData.Password" type="password" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Log ind</button>
+</EditForm>
+
+@code {
+    private LoginRequest loginData = new();
+    private string? message;
+
+    /*private class LoginResponse
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public bool MustChangePassword { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }*/
+
+    private async Task HandleLogin()
+    {
+        var response = await Http.PostAsJsonAsync("http://localhost:5102/api/auth/login", loginData);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            message = "Forkert email eller adgangskode.";
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+        if (result is null)
+        {
+            message = "Noget gik galt med login.";
+            return;
+        }
+
+        if (result.MustChangePassword)
+        {
+            Nav.NavigateTo("/changepassword");
+        }
+        else
+        {
+            Nav.NavigateTo("/dashboard");
+        }
+        
+        await JS.InvokeVoidAsync("localStorage.setItem", "userName", result.Name);
+        await JS.InvokeVoidAsync("localStorage.setItem", "userRole", result.Role);
+        Nav.NavigateTo("/dashboard");
+
+    }
+}

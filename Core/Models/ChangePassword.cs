@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 namespace Core.Models;
 
-public class ChangePassword
+public class ChangePasswordModel
 {
     [Required, EmailAddress]
     public string Email { get; set; } = "";
