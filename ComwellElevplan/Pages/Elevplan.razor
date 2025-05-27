@@ -1,0 +1,247 @@
+@page "/elevplan"
+@using Core.Services
+@inject IElevplanService ElevplanService
+
+<PageTitle>Elevplaner</PageTitle>
+
+<div class="elevplan-container"> 
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-content">
+            <h1>Elevplaner</h1>
+            <div class="topbar-actions">
+                <select @onchange="HandleElevChange" class="elev-selector">
+                    @for (int i = 0; i < alleElever.Count; i++)
+                    {
+                        <option value="@i" selected="@(i == selectedElevIndex)">
+                            @alleElever[i].Navn
+                        </option>
+                    }
+                </select>
+                <button class="new-button" @onclick="CreateNewElev">
+                    <i class="fas fa-plus"></i> Ny Elev
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        @if (currentElevplan != null && currentElevplan.Elev != null)
+        {
+            <!-- Elev Info Header -->
+            <div class="elev-header">
+                <div class="elev-title">
+                    <i class="fas fa-users"></i>
+                    <h2>@currentElevplan.Elev.Navn</h2>
+                </div>
+                <div class="elev-info">
+                    <div class="info-item">
+                        <i class="fas fa-user"></i>
+                        <span class="label">Elev:</span>
+                        <span>@currentElevplan.Elev.Navn</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Skole:</span>
+                        <span>@currentElevplan.Elev.Skole</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-calendar"></i>
+                        <span class="label">Oprettet:</span>
+                        <span>@currentElevplan.Elev.OprettetDato.ToString("dd.MM.yyyy")</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="label">Opdateret:</span>
+                        <span>@currentElevplan.Elev.OpdateretDato.ToString("dd.MM.yyyy")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Period Tabs -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    @foreach (var period in currentElevplan.Perioder)
+                    {
+                        <button class="tab-button @(activePeriod == period.PeriodeNummer ? "active" : "")" 
+                                @onclick="() => SetActivePeriod(period.PeriodeNummer)">
+                            @period.Title
+                            <div class="tab-duration">@period.Duration</div>
+                        </button>
+                    }
+                </div>
+
+                <!-- Period Content -->
+                @if (currentPeriod != null)
+                {
+                    <div class="tab-content">
+                        <div class="period-header">
+                            <h2>@currentPeriod.Title</h2>
+                            <div class="period-info">
+                                <span><strong>Praktikperiode:</strong> @currentPeriod.Duration</span>
+                                <span><strong>Skoleperiode:</strong> @currentPeriod.SchoolPeriod</span>
+                            </div>
+                        </div>
+
+                        <!-- Categories Container -->
+                        <div class="categories-container">
+                            @foreach (var category in currentPeriod.Categories)
+                            {
+                                var categoryIndex = currentPeriod.Categories.IndexOf(category);
+                                <div class="category">
+                                    <button class="category-header" @onclick="() => ToggleCategory(categoryIndex)">
+                                        <h3>@category.Name</h3>
+                                        <div class="category-meta">
+                                            <span>@category.Tasks.Count opgaver</span>
+                                            <i class="fas fa-chevron-right chevron @(expandedCategory == categoryIndex ? "expanded" : "")"></i>
+                                        </div>
+                                    </button>
+                                    
+                                    @if (expandedCategory == categoryIndex)
+                                    {
+                                        <div class="category-content expanded">
+                                            <div class="tasks-list">
+                                                @foreach (var task in category.Tasks)
+                                                {
+                                                    <div class="task">
+                                                        @if (task.IsCompleted)
+                                                        {
+                                                            <i class="fas fa-check-circle status-completed task-status" 
+                                                               @onclick="() => ToggleTaskStatus(task)"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="fas fa-times-circle status-pending task-status" 
+                                                               @onclick="() => ToggleTaskStatus(task)"></i>
+                                                        }
+                                                        <div class="task-content">
+                                                            <div class="task-title">@task.Title</div>
+                                                            <div class="task-details">
+                                                                <div><strong>Ansvarlig:</strong> @task.Responsible</div>
+                                                                <div><strong>Deadline:</strong> @task.Deadline</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Progress Summary -->
+            <div class="progress-summary">
+                <h3>Fremskridt oversigt</h3>
+                <div class="progress-grid">
+                    @foreach (var progress in progressSummary)
+                    {
+                        <div class="progress-item">
+                            <h4>@progress.PeriodTitle</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: @(progress.ProgressPercentage)%"></div>
+                            </div>
+                            <div class="progress-text">@progress.CompletedTasks af @progress.TotalTasks opgaver</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="loading">
+                <p>Indlæser elevplan...</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<ElevInfo> alleElever = new();
+    private ElevplanViewModel? currentElevplan;
+    private List<ProgressSummary> progressSummary = new();
+    
+    private int selectedElevIndex = 0;
+    private int activePeriod = 1;
+    private int? expandedCategory = null;
+    
+    private PeriodViewModel? currentPeriod => currentElevplan?.Perioder.FirstOrDefault(p => p.PeriodeNummer == activePeriod);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        alleElever = await ElevplanService.GetAlleEleverAsync();
+        
+        if (alleElever.Any())
+        {
+            await LoadElevplan(alleElever[selectedElevIndex].Id);
+        }
+    }
+
+    private async Task LoadElevplan(string elevId)
+    {
+        currentElevplan = await ElevplanService.GetElevplanViewModelAsync(elevId);
+        progressSummary = await ElevplanService.GetProgressSummaryAsync(elevId);
+        
+        if (currentElevplan.Perioder.Any())
+        {
+            activePeriod = currentElevplan.Perioder.First().PeriodeNummer;
+        }
+        
+        StateHasChanged();
+    }
+
+    private async Task HandleElevChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int newIndex) && newIndex < alleElever.Count)
+        {
+            selectedElevIndex = newIndex;
+            await LoadElevplan(alleElever[selectedElevIndex].Id);
+        }
+    }
+
+    private void SetActivePeriod(int periodId)
+    {
+        activePeriod = periodId;
+        expandedCategory = null;
+        StateHasChanged();
+    }
+
+    private void ToggleCategory(int categoryIndex)
+    {
+        expandedCategory = expandedCategory == categoryIndex ? null : categoryIndex;
+        StateHasChanged();
+    }
+
+    private async Task ToggleTaskStatus(TaskViewModel task)
+    {
+        task.IsCompleted = !task.IsCompleted;
+        
+        if (currentElevplan?.Elev != null)
+        {
+            await ElevplanService.UpdateOpgaveStatusAsync(
+                currentElevplan.Elev.Id, 
+                activePeriod, 
+                task.Kategori, 
+                task.Title, 
+                task.IsCompleted
+            );
+            
+            progressSummary = await ElevplanService.GetProgressSummaryAsync(currentElevplan.Elev.Id);
+        }
+        
+        StateHasChanged();
+    }
+
+    private void CreateNewElev()
+    {
+        // Navigation til ny elev side eller modal
+        Console.WriteLine("Opret ny elev - implementer senere");
+    }
+}

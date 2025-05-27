@@ -1,6 +1,5 @@
-﻿@page "/elevplaner"
+﻿@page "/opret"
 @inject HttpClient Http
-@using Core.Models
 
 <h3>Elevplaner</h3>
 
@@ -14,7 +13,7 @@ else if (!elevplaner.Any())
 }
 else
 {
-    @foreach (var plan in elevplaner)
+    @foreach (var plan in elevplaner) 
     {
         <div class="card mb-4 p-3">
             <h4>@plan.elev_navn (@plan.elev_id)</h4>
@@ -66,12 +65,18 @@ else
 }
 
 @code {
-    private List<Elevplan>? elevplaner;
+    private List<Core.Models.Elevplan>? elevplaner; 
 
     protected override async Task OnInitializedAsync()
     {
-        elevplaner = await Http.GetFromJsonAsync<List<Elevplan>>("api/elevplan");
+        try
+        {
+            elevplaner = await Http.GetFromJsonAsync<List<Core.Models.Elevplan>>("api/elevplan/raw"); 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            elevplaner = new List<Core.Models.Elevplan>();
+        }
     }
 }
-
-

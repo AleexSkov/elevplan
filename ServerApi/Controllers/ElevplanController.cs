@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using ServerApi.Interface;
-using Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Core.Interface;
+using Core.Models;
 
 namespace ServerApi.Controllers
 {
@@ -17,10 +17,10 @@ namespace ServerApi.Controllers
             _elevplanService = elevplanService;
         }
 
-        [HttpGet]
+        [HttpGet("raw")] // ✅ Tilføj endpoint for raw data
         public async Task<ActionResult<List<Elevplan>>> GetAll()
         {
-            var elevplaner = await _elevplanService.GetAllAsync();
+            var elevplaner = await _elevplanService.GetAllAsync(); 
             return Ok(elevplaner);
         }
     }

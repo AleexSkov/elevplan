@@ -1,16 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
+
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
         <PackageReference Include="MongoDB.Bson" Version="3.4.0" />
         <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
         <ProjectReference Include="..\Core\Core.csproj" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
     </ItemGroup>
+
     <ItemGroup>
-      <Folder Include="wwwroot\" />
+        <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
     <Target Name="CopyBlazorToWwwRoot" AfterTargets="Publish">
         <Exec Command="dotnet publish ../ComwellElevplan/ComwellElevplan.csproj -c Release -o $(ProjectDir)wwwroot" />

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Core.Models;
 using MongoDB.Bson;
 
-namespace ServerApi.Interface
+namespace Core.Interface 
 {
     public interface IAppUser
     {

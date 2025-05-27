@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-
-using ServerApi.Interface;
+using Core.Services;
+using Core.Interface;
 using ServerApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IElevplan, ElevplanRepository>();
+builder.Services.AddScoped<IElevplanService, ElevplanService>();
 builder.Services.AddSingleton<IAppUser, AppUserRepository>();
 
 builder.Services.AddDistributedMemoryCache();
@@ -23,7 +24,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); 
     });
 });
 
