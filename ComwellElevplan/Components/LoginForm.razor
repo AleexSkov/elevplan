@@ -34,6 +34,7 @@
     private async Task HandleLogin()
     {
         var resp = await Http.PostAsJsonAsync("api/auth/login", credentials);
+
         if (!resp.IsSuccessStatusCode)
         {
             error = await resp.Content.ReadAsStringAsync();
@@ -41,14 +42,34 @@
         }
 
         var result = await resp.Content.ReadFromJsonAsync<LoginResponse>();
-        if (result?.ElevId != null)
+
+        if (result is null)
         {
-            // Gem ElevId i localStorage
+            error = "Noget gik galt med login.";
+            return;
+        }
+
+        // Gem relevante oplysninger i localStorage
+        await JS.InvokeVoidAsync("localStorage.setItem", "userName", result.Name);
+        await JS.InvokeVoidAsync("localStorage.setItem", "userRole", result.Role);
+        await JS.InvokeVoidAsync("localStorage.setItem", "mustChangePassword", result.MustChangePassword.ToString());
+
+        if (result.ElevId is not null)
+        {
             await JS.InvokeVoidAsync("localStorage.setItem", "elevId", result.ElevId);
         }
 
-        Nav.NavigateTo("/min-elevplan");
+        // Hvis brugeren skal ændre kode ved første login – navigér til ChangePassword siden
+        if (result.MustChangePassword)
+        {
+            Nav.NavigateTo("/changepassword");
+        }
+        else
+        {
+            Nav.NavigateTo("/min-elevplan");
+        }
     }
+
 
     public class LoginResponse
     {
