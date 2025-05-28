@@ -1,40 +1,33 @@
 // File: Program.cs
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MongoDB.Driver;
 using ServerApi.Interface;
 using ServerApi.Repository;
-using Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC / Controllers
+// ──────────────────────────────────────────────────────────────────────────────
+// 1) MVC / Controllers, Session, Caching, CORS
+// ──────────────────────────────────────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-
-// MongoDB DI
-builder.Services.AddSingleton<IMongoClient>(sp =>
-    new MongoClient(builder.Configuration.GetConnectionString("Comwell")));
-builder.Services.AddSingleton(sp =>
-    sp.GetRequiredService<IMongoClient>().GetDatabase("Comwell"));
-builder.Services.AddSingleton(sp =>
-    sp.GetRequiredService<IMongoDatabase>().GetCollection<AppUser>("AppUsers"));
-builder.Services.AddSingleton(sp =>
-    sp.GetRequiredService<IMongoDatabase>().GetCollection<Elevplan>("Elevplan"));
-
-// Repositories / Services
-builder.Services.AddSingleton<IAppUser, AppUserRepository>();
-builder.Services.AddSingleton<IElevplan, ElevplanRepository>();
-
-// CORS
-builder.Services.AddCors(options =>
+builder.Services.AddCors(opts =>
 {
-    options.AddPolicy("AllowAll", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    opts.AddPolicy("AllowAll", b =>
+        b.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 2) Registrér dine repository‐implementeringer
+//    Repositorierne tager selv connection‐string og åbner Mongo‐forbindelsen.
+// ──────────────────────────────────────────────────────────────────────────────
+builder.Services.AddSingleton<IAppUser,       AppUserRepository>();
+builder.Services.AddSingleton<IElevplan,      ElevplanRepository>();
 
 var app = builder.Build();
 
@@ -45,8 +38,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 app.UseSession();
+
 app.UseRouting();
 app.UseEndpoints(endpoints => endpoints.MapControllers());
+
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.MapFallbackToFile("index.html");

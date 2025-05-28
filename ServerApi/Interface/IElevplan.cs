@@ -2,11 +2,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Models;
 
-namespace ServerApi.Interface;
-
-public interface IElevplan
+namespace ServerApi.Interface
 {
-    Task<List<Elevplan>> GetAllAsync();
-    Task<Elevplan?> GetTemplateAsync();
-    Task CreateAsync(Elevplan plan);
+    public interface IElevplan
+    {
+        Task<List<Elevplan>> GetAllAsync();
+        Task<Elevplan?> GetTemplateAsync();
+        Task<Elevplan?> GetByElevIdAsync(string elevId);
+        Task CreateAsync(Elevplan plan);
+        Task UpdateOpgaveAsync(
+            string elevId,
+            int periodeNummer,
+            string kategori,
+            string beskrivelse,
+            bool gennemført);
+    }
 }

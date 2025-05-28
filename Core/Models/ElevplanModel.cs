@@ -7,7 +7,6 @@ namespace Core.Models
     public class Elevplan
     {
         [BsonId]
-        // Fortæller, at _id er et heltal (int)
         [BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
         public int Id { get; set; }
 
@@ -37,34 +36,46 @@ namespace Core.Models
     {
         [BsonElement("periode_nummer")]
         public int PeriodeNummer { get; set; }
+
         [BsonElement("varighed_uger")]
         public int VarighedUger { get; set; }
+
         [BsonElement("skoleperiode")]
-        public Skoleperiode Skoleperiode { get; set; }
+        public Skoleperiode Skoleperiode { get; set; } = default!;
+
         [BsonElement("opgaver")]
-        public List<Opgave> Opgaver { get; set; }
+        public List<Opgave> Opgaver { get; set; } = new();
     }
+
     public class Skoleperiode
     {
         [BsonElement("start_dato")]
         public DateTime? StartDato { get; set; }
+
         [BsonElement("slut_dato")]
         public DateTime? SlutDato { get; set; }
+
         [BsonElement("varighed_uger")]
         public int VarighedUger { get; set; }
     }
+
     public class Opgave
     {
         [BsonElement("kategori")]
-        public string Kategori { get; set; }
+        public string Kategori { get; set; } = default!;
+
         [BsonElement("beskrivelse")]
-        public string Beskrivelse { get; set; }
+        public string Beskrivelse { get; set; } = default!;
+
         [BsonElement("ansvarlig")]
-        public string Ansvarlig { get; set; }
+        public string Ansvarlig { get; set; } = default!;
+
         [BsonElement("initiator")]
-        public string Initiator { get; set; }
+        public string Initiator { get; set; } = default!;
+
         [BsonElement("tidslinje")]
-        public string Tidslinje { get; set; }
+        public string Tidslinje { get; set; } = default!;
+
         [BsonElement("gennemført")]
         public bool Gennemført { get; set; }
     }
