@@ -40,7 +40,7 @@
 
     private async Task HandleLogin()
     {
-        var response = await Http.PostAsJsonAsync("http://localhost:5102/api/auth/login", loginData);
+        var response = await Http.PostAsJsonAsync("api/auth/login", loginData);
 
         if (!response.IsSuccessStatusCode)
         {
