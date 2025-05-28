@@ -1,8 +1,6 @@
 @page "/min-elevplan"
 
-@using System
-@using System.Linq
-@using System.Collections.Generic
+@using Core.Models
 @using System.Net.Http.Json
 @inject HttpClient Http
 @inject IJSRuntime JS
@@ -35,36 +33,63 @@ else
 
     @if (selectedPeriod != null)
     {
-        <h5>Opgaver for Periode @selectedPeriod.PeriodeNummer</h5>
+        <h5>Delmål for Periode @selectedPeriod.PeriodeNummer</h5>
         <ul class="list-group">
-            @foreach (var op in selectedPeriod.Opgaver)
+            @foreach (var delmaal in selectedPeriod.Opgaver)
             {
                 <li class="list-group-item d-flex align-items-center">
                     <input type="checkbox"
                            class="form-check-input me-2"
-                           checked="@op.Gennemført"
-                           @onchange="() => Toggle(op)" />
-                    <div>
-                        <strong>@op.Kategori:</strong> @op.Beskrivelse
+                           checked="@delmaal.Gennemført"
+                           @onclick="() => Toggle(delmaal)" />
+                    <div class="flex-grow-1">
+                        <strong>@delmaal.Kategori:</strong> @delmaal.Beskrivelse
+                        <div><small>Ansvarlig: @delmaal.Ansvarlig, Initiator: @delmaal.Initiator</small></div>
                     </div>
+                    <button class="btn btn-sm btn-danger ms-3" @onclick="() => DeleteDelmaal(delmaal)">Slet</button>
                 </li>
             }
         </ul>
+
+        <div class="mt-4">
+            <h5>Tilføj nyt delmål</h5>
+            <EditForm Model="newDelmaal" OnValidSubmit="AddDelmaal">
+                <DataAnnotationsValidator />
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <InputText class="form-control" @bind-Value="newDelmaal.Kategori" placeholder="Kategori" />
+                    </div>
+                    <div class="col-md-8">
+                        <InputText class="form-control" @bind-Value="newDelmaal.Beskrivelse" placeholder="Beskrivelse" />
+                    </div>
+                    <div class="col-md-4">
+                        <InputText class="form-control" @bind-Value="newDelmaal.Ansvarlig" placeholder="Ansvarlig" />
+                    </div>
+                    <div class="col-md-4">
+                        <InputText class="form-control" @bind-Value="newDelmaal.Initiator" placeholder="Initiator" />
+                    </div>
+                    <div class="col-md-4">
+                        <InputText class="form-control" @bind-Value="newDelmaal.Tidslinje" placeholder="Tidslinje/Deadline" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Tilføj delmål</button>
+            </EditForm>
+        </div>
     }
 }
 
 @code {
-    // Peg direkte på Core-modellen Elevplan
-    private Core.Models.Elevplan?                  plan;
-    private Core.Models.Praktikperiode?            selectedPeriod;
+    private Elevplan? plan;
+    private Praktikperiode? selectedPeriod;
+
+    private Delmaal newDelmaal = new Delmaal();
 
     protected override async Task OnInitializedAsync()
     {
         var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
         if (!string.IsNullOrEmpty(elevId))
         {
-            // Hent som Core.Models.Elevplan
-            plan = await Http.GetFromJsonAsync<Core.Models.Elevplan>($"api/elevplan/{elevId}");
+            plan = await Http.GetFromJsonAsync<Elevplan>($"api/elevplaner/{elevId}");
             selectedPeriod = plan?.Praktikperioder.FirstOrDefault();
         }
     }
@@ -73,22 +98,48 @@ else
     {
         if (int.TryParse(e.Value?.ToString(), out var num))
         {
-            selectedPeriod = plan?.Praktikperioder
-                .FirstOrDefault(p => p.PeriodeNummer == num);
+            selectedPeriod = plan?.Praktikperioder.FirstOrDefault(p => p.PeriodeNummer == num);
         }
     }
 
-    private async Task Toggle(Core.Models.Opgave op)
+    private async Task Toggle(Delmaal delmaal)
     {
-        op.Gennemført = !op.Gennemført;
-        await Http.PostAsJsonAsync(
-            $"api/elevplan/{plan!.ElevId}/opgave",
-            new
+        delmaal.Gennemført = !delmaal.Gennemført;
+        await Http.PutAsJsonAsync(
+            $"api/elevplaner/{plan!.ElevId}/perioder/{selectedPeriod!.PeriodeNummer}/delmaal/{delmaal.DelmaalId}",
+            delmaal);
+    }
+
+    private async Task AddDelmaal()
+    {
+        if (plan == null || selectedPeriod == null)
+            return;
+
+        var response = await Http.PostAsJsonAsync(
+            $"api/elevplaner/{plan.ElevId}/perioder/{selectedPeriod.PeriodeNummer}/delmaal", newDelmaal);
+        if (response.IsSuccessStatusCode)
+        {
+            var created = await response.Content.ReadFromJsonAsync<Delmaal>();
+            if (created != null)
             {
-                PeriodeNummer = selectedPeriod!.PeriodeNummer,
-                Kategori      = op.Kategori,
-                Beskrivelse   = op.Beskrivelse,
-                Gennemført    = op.Gennemført
-            });
+                selectedPeriod.Opgaver.Add(created);
+                newDelmaal = new Delmaal();
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task DeleteDelmaal(Delmaal delmaal)
+    {
+        if (plan == null || selectedPeriod == null)
+            return;
+
+        var response = await Http.DeleteAsync(
+            $"api/elevplaner/{plan.ElevId}/perioder/{selectedPeriod.PeriodeNummer}/delmaal/{delmaal.DelmaalId}");
+        if (response.IsSuccessStatusCode)
+        {
+            selectedPeriod.Opgaver.Remove(delmaal);
+            StateHasChanged();
+        }
     }
 }
