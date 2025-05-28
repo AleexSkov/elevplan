@@ -13,25 +13,19 @@ namespace ServerApi.Controllers
         private readonly IElevplan _elevplanService;
 
         public ElevplanController(IElevplan elevplanService)
-        {
-            _elevplanService = elevplanService;
-        }
+            => _elevplanService = elevplanService;
 
         // GET api/elevplan
         [HttpGet]
         public async Task<ActionResult<List<Elevplan>>> GetAll()
-        {
-            var elevplaner = await _elevplanService.GetAllAsync();
-            return Ok(elevplaner);
-        }
+            => Ok(await _elevplanService.GetAllAsync());
 
         // GET api/elevplan/{elevId}
         [HttpGet("{elevId}")]
         public async Task<ActionResult<Elevplan?>> GetByElevId(string elevId)
         {
             var plan = await _elevplanService.GetByElevIdAsync(elevId);
-            if (plan == null) return NotFound();
-            return Ok(plan);
+            return plan == null ? NotFound() : Ok(plan);
         }
 
         // POST api/elevplan/{elevId}/opgave
@@ -52,8 +46,8 @@ namespace ServerApi.Controllers
         public class UpdateOpgaveRequest
         {
             public int    PeriodeNummer { get; set; }
-            public string Kategori      { get; set; } = default!;
-            public string Beskrivelse   { get; set; } = default!;
+            public string Kategori      { get; set; } = string.Empty;
+            public string Beskrivelse   { get; set; } = string.Empty;
             public bool   Gennemført    { get; set; }
         }
     }

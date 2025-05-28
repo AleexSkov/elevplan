@@ -13,17 +13,16 @@ namespace ServerApi.Repository
 
         public ElevplanRepository()
         {
-            var mongoUri = "mongodb+srv://benjaminlorenzen:pdx45bjd@cluster0.55cag.mongodb.net/Comwell?retryWrites=true&w=majority";
-            var client   = new MongoClient(mongoUri);
-            var db       = client.GetDatabase("Comwell");
+            var mongoUri = "mongodb+srv://benjaminlorenzen:pdx45bjd@" +
+                           "cluster0.55cag.mongodb.net/Comwell?"  +
+                           "retryWrites=true&w=majority";
+            var client = new MongoClient(mongoUri);
+            var db     = client.GetDatabase("Comwell");
             _elevplanCollection = db.GetCollection<Elevplan>("Elevplan");
         }
 
-        // <--- Kun ÉN GetAllAsync
         public async Task<List<Elevplan>> GetAllAsync()
-        {
-            return await _elevplanCollection.Find(_ => true).ToListAsync();
-        }
+            => await _elevplanCollection.Find(_ => true).ToListAsync();
 
         public async Task<Elevplan?> GetTemplateAsync()
         {
@@ -69,8 +68,7 @@ namespace ServerApi.Repository
             elevplan.OpdateretDato = DateTime.UtcNow;
 
             await _elevplanCollection.ReplaceOneAsync(
-                p => p.ElevId == elevId,
-                elevplan);
+                p => p.ElevId == elevId, elevplan);
         }
     }
 }

@@ -20,71 +20,60 @@ namespace ServerApi.Controllers
             _elevplanService = elevplanService;
         }
 
-        // DTO til registrering (kan også bruge AppUser direkte men ofte bedre med en request-klasse)
-        public class RegisterRequest
+        public class RegisterResponse
         {
-            public string Email    { get; set; } = default!;
+            public string Message  { get; set; } = default!;
             public string Password { get; set; } = default!;
-            public string Name     { get; set; } = default!;
-            public string Role     { get; set; } = "Elev";
+            public string? ElevId  { get; set; }
         }
 
         // POST api/auth/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest req)
+        public async Task<IActionResult> Register([FromBody] AppUser newUser)
         {
-            if (string.IsNullOrWhiteSpace(req.Email) || string.IsNullOrWhiteSpace(req.Password))
+            if (string.IsNullOrWhiteSpace(newUser.Email) 
+             || string.IsNullOrWhiteSpace(newUser.PasswordHash))
                 return BadRequest("Email og password er påkrævet.");
 
-            if (await _appUserRepo.EmailExistsAsync(req.Email))
+            if (await _appUserRepo.EmailExistsAsync(newUser.Email))
                 return Conflict("En bruger med denne email findes allerede.");
 
-            var user = new AppUser
-            {
-                Id               = MongoDB.Bson.ObjectId.GenerateNewId(),
-                Email            = req.Email,
-                Name             = req.Name,
-                Role             = req.Role,
-                MustChangePassword = true,
-            };
-
-            // Hash password
+            var rawPw = newUser.PasswordHash;
             var hasher = new PasswordHasher<AppUser>();
-            user.PasswordHash = hasher.HashPassword(user, req.Password);
+            newUser.PasswordHash     = hasher.HashPassword(newUser, rawPw);
+            newUser.MustChangePassword = true;
+            newUser.Id               = MongoDB.Bson.ObjectId.GenerateNewId();
+            newUser.CreatedAt        = DateTime.UtcNow;
 
-            await _appUserRepo.CreateAsync(user);
+            await _appUserRepo.CreateAsync(newUser);
 
-            // Hvis det er en Elev, opret en kopi af template
-            if (user.Role == "Elev")
+            string? elevId = null;
+            if (newUser.Role == "Elev")
             {
                 var template = await _elevplanService.GetTemplateAsync();
                 if (template != null)
                 {
-                    var newPlan = new Elevplan
+                    var plan = new Elevplan
                     {
-                        ElevId        = user.Id.ToString(),
-                        ElevNavn      = user.Name!,
-                        Aftaleform    = template.Aftaleform,
-                        Skole         = template.Skole,
-                        Praktikperioder   = template.Praktikperioder,
-                        OprettetDato  = DateTime.UtcNow,
-                        OpdateretDato = DateTime.UtcNow
+                        ElevId          = newUser.Id.ToString(),
+                        ElevNavn        = newUser.Name ?? "",
+                        Aftaleform      = template.Aftaleform,
+                        Skole           = template.Skole,
+                        Praktikperioder = template.Praktikperioder,
+                        OprettetDato    = DateTime.UtcNow,
+                        OpdateretDato   = DateTime.UtcNow
                     };
-                    await _elevplanService.CreateAsync(newPlan);
+                    await _elevplanService.CreateAsync(plan);
+                    elevId = plan.ElevId;
                 }
             }
 
-            return Ok(new
+            return Ok(new RegisterResponse
             {
-                Message = "Bruger oprettet",
-                ElevId  = user.Role == "Elev" ? user.Id.ToString() : null
+                Message  = "Bruger oprettet",
+                Password = rawPw,
+                ElevId   = elevId
             });
-        }
-
-        public class LoginRequest
-        {
-            public string Email    { get; set; } = default!;
-            public string Password { get; set; } = default!;
         }
 
         public class LoginResponse
@@ -98,21 +87,19 @@ namespace ServerApi.Controllers
 
         // POST api/auth/login
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
-            var user = await _appUserRepo.GetByEmailAsync(request.Email);
-            if (user == null)
-                return Unauthorized("Ugyldig email eller adgangskode");
+            var user = await _appUserRepo.GetByEmailAsync(req.Email);
+            if (user == null) return Unauthorized("Ugyldig email eller adgangskode");
 
             var hasher = new PasswordHasher<AppUser>();
-            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
-            if (result == PasswordVerificationResult.Failed)
+            var res = hasher.VerifyHashedPassword(user, user.PasswordHash, req.Password);
+            if (res == PasswordVerificationResult.Failed)
                 return Unauthorized("Ugyldig email eller adgangskode");
 
             HttpContext.Session.SetString("user_email", user.Email);
             HttpContext.Session.SetString("user_role",  user.Role);
 
-            // Hent ElevId hvis rollen er Elev
             string? elevId = null;
             if (user.Role == "Elev")
             {
@@ -132,18 +119,17 @@ namespace ServerApi.Controllers
 
         // POST api/auth/change-password
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel m)
         {
-            var user = await _appUserRepo.GetByEmailAsync(model.Email);
-            if (user == null)
-                return NotFound("Bruger ikke fundet");
+            var user = await _appUserRepo.GetByEmailAsync(m.Email);
+            if (user == null) return NotFound("Bruger ikke fundet");
 
             var hasher = new PasswordHasher<AppUser>();
-            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, model.CurrentPassword);
-            if (result == PasswordVerificationResult.Failed)
+            var res = hasher.VerifyHashedPassword(user, user.PasswordHash, m.CurrentPassword);
+            if (res == PasswordVerificationResult.Failed)
                 return BadRequest(new { error = "Nuværende adgangskode er forkert" });
 
-            user.PasswordHash       = hasher.HashPassword(user, model.NewPassword);
+            user.PasswordHash       = hasher.HashPassword(user, m.NewPassword);
             user.MustChangePassword = false;
             await _appUserRepo.UpdateAsync(user.Id, user);
 

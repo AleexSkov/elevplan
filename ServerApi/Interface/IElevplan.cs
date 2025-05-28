@@ -7,14 +7,14 @@ namespace ServerApi.Interface
     public interface IElevplan
     {
         Task<List<Elevplan>> GetAllAsync();
-        Task<Elevplan?> GetTemplateAsync();
-        Task<Elevplan?> GetByElevIdAsync(string elevId);
+        Task<Elevplan?>       GetTemplateAsync();
+        Task<Elevplan?>       GetByElevIdAsync(string elevId);
         Task CreateAsync(Elevplan plan);
         Task UpdateOpgaveAsync(
             string elevId,
-            int periodeNummer,
+            int    periodeNummer,
             string kategori,
             string beskrivelse,
-            bool gennemført);
+            bool   gennemført);
     }
 }

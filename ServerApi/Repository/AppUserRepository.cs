@@ -14,13 +14,11 @@ namespace ServerApi.Repository
 
         public AppUserRepository()
         {
-            // Samme connection string–flow her
-            var mongoUri = 
-                "mongodb+srv://benjaminlorenzen:pdx45bjd@" +
-                "cluster0.55cag.mongodb.net/Comwell?" +
-                "retryWrites=true&w=majority";
-            var client   = new MongoClient(mongoUri);
-            var db       = client.GetDatabase("Comwell");
+            var mongoUri = "mongodb+srv://benjaminlorenzen:pdx45bjd@" +
+                           "cluster0.55cag.mongodb.net/Comwell?"  +
+                           "retryWrites=true&w=majority";
+            var client = new MongoClient(mongoUri);
+            var db     = client.GetDatabase("Comwell");
             _appUserCollection = db.GetCollection<AppUser>("AppUsers");
         }
 
@@ -28,13 +26,11 @@ namespace ServerApi.Repository
             => await _appUserCollection.Find(_ => true).ToListAsync();
 
         public async Task<AppUser?> GetByEmailAsync(string email)
-            => await _appUserCollection
-                .Find(u => u.Email == email)
+            => await _appUserCollection.Find(u => u.Email == email)
                 .FirstOrDefaultAsync();
 
         public async Task<AppUser?> GetByIdAsync(ObjectId id)
-            => await _appUserCollection
-                .Find(u => u.Id == id)
+            => await _appUserCollection.Find(u => u.Id == id)
                 .FirstOrDefaultAsync();
 
         public async Task CreateAsync(AppUser user)
@@ -44,16 +40,13 @@ namespace ServerApi.Repository
         }
 
         public async Task<bool> EmailExistsAsync(string email)
-            => await _appUserCollection
-                .Find(u => u.Email == email)
+            => await _appUserCollection.Find(u => u.Email == email)
                 .AnyAsync();
 
         public async Task UpdateAsync(ObjectId id, AppUser updatedUser)
         {
-            var filter = Builders<AppUser>
-                .Filter.Eq(u => u.Id, id);
-            await _appUserCollection
-                .ReplaceOneAsync(filter, updatedUser);
+            var filter = Builders<AppUser>.Filter.Eq(u => u.Id, id);
+            await _appUserCollection.ReplaceOneAsync(filter, updatedUser);
         }
     }
 }

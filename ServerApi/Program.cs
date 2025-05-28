@@ -8,7 +8,7 @@ using ServerApi.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // ──────────────────────────────────────────────────────────────────────────────
-// 1) MVC / Controllers, Session, Caching, CORS
+// 1) Controllers, Session, Caching & CORS
 // ──────────────────────────────────────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -23,14 +23,16 @@ builder.Services.AddCors(opts =>
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
-// 2) Registrér dine repository‐implementeringer
-//    Repositorierne tager selv connection‐string og åbner Mongo‐forbindelsen.
+// 2) Registrér dine repositories i DI (MUST be *before* Build())
 // ──────────────────────────────────────────────────────────────────────────────
-builder.Services.AddSingleton<IAppUser,       AppUserRepository>();
-builder.Services.AddSingleton<IElevplan,      ElevplanRepository>();
+builder.Services.AddSingleton<IAppUser,  AppUserRepository>();
+builder.Services.AddSingleton<IElevplan, ElevplanRepository>();
 
 var app = builder.Build();
 
+// ──────────────────────────────────────────────────────────────────────────────
+// 3) Middleware pipeline
+// ──────────────────────────────────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
