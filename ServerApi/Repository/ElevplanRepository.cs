@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Core.Models;
 using ServerApi.Interface;
@@ -14,35 +13,28 @@ namespace ServerApi.Repository
 
         public ElevplanRepository()
         {
-            // Direkte connection string her for overblikkets skyld
-            var mongoUri = 
-                "mongodb+srv://benjaminlorenzen:pdx45bjd@" +
-                "cluster0.55cag.mongodb.net/Comwell?" +
-                "retryWrites=true&w=majority";
+            var mongoUri = "mongodb+srv://benjaminlorenzen:pdx45bjd@cluster0.55cag.mongodb.net/Comwell?retryWrites=true&w=majority";
             var client   = new MongoClient(mongoUri);
             var db       = client.GetDatabase("Comwell");
             _elevplanCollection = db.GetCollection<Elevplan>("Elevplan");
         }
 
+        // <--- Kun ÉN GetAllAsync
         public async Task<List<Elevplan>> GetAllAsync()
-            => await _elevplanCollection.Find(_ => true).ToListAsync();
+        {
+            return await _elevplanCollection.Find(_ => true).ToListAsync();
+        }
 
         public async Task<Elevplan?> GetTemplateAsync()
         {
-            var filter = Builders<Elevplan>
-                .Filter.Eq(p => p.ElevId, "TBD");
-            return await _elevplanCollection
-                .Find(filter)
-                .FirstOrDefaultAsync();
+            var filter = Builders<Elevplan>.Filter.Eq(p => p.ElevId, "TBD");
+            return await _elevplanCollection.Find(filter).FirstOrDefaultAsync();
         }
 
         public async Task<Elevplan?> GetByElevIdAsync(string elevId)
         {
-            var filter = Builders<Elevplan>
-                .Filter.Eq(p => p.ElevId, elevId);
-            return await _elevplanCollection
-                .Find(filter)
-                .FirstOrDefaultAsync();
+            var filter = Builders<Elevplan>.Filter.Eq(p => p.ElevId, elevId);
+            return await _elevplanCollection.Find(filter).FirstOrDefaultAsync();
         }
 
         public async Task CreateAsync(Elevplan plan)
@@ -58,10 +50,10 @@ namespace ServerApi.Repository
 
         public async Task UpdateOpgaveAsync(
             string elevId,
-            int periodeNummer,
+            int    periodeNummer,
             string kategori,
             string beskrivelse,
-            bool gennemført)
+            bool   gennemført)
         {
             var elevplan = await GetByElevIdAsync(elevId);
             if (elevplan == null) return;
@@ -69,15 +61,16 @@ namespace ServerApi.Repository
             var periode = elevplan.Praktikperioder
                 .Find(p => p.PeriodeNummer == periodeNummer);
             var opgave = periode?.Opgaver
-                .Find(o => o.Kategori == kategori 
+                .Find(o => o.Kategori == kategori
                         && o.Beskrivelse == beskrivelse);
             if (opgave == null) return;
 
-            opgave.Gennemført    = gennemført;
+            opgave.Gennemført     = gennemført;
             elevplan.OpdateretDato = DateTime.UtcNow;
 
             await _elevplanCollection.ReplaceOneAsync(
-                p => p.ElevId == elevId, elevplan);
+                p => p.ElevId == elevId,
+                elevplan);
         }
     }
 }

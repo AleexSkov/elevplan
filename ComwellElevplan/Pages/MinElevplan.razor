@@ -1,6 +1,9 @@
-@page "/elevplan"
+@page "/min-elevplan"
+
+@using System
+@using System.Linq
+@using System.Collections.Generic
 @using System.Net.Http.Json
-@using Core.Models
 @inject HttpClient Http
 @inject IJSRuntime JS
 
@@ -51,15 +54,17 @@ else
 }
 
 @code {
-    private Elevplan? plan;
-    private Praktikperiode? selectedPeriod;
+    // Peg direkte på Core-modellen Elevplan
+    private Core.Models.Elevplan?                  plan;
+    private Core.Models.Praktikperiode?            selectedPeriod;
 
     protected override async Task OnInitializedAsync()
     {
         var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
         if (!string.IsNullOrEmpty(elevId))
         {
-            plan = await Http.GetFromJsonAsync<Elevplan>($"api/elevplan/{elevId}");
+            // Hent som Core.Models.Elevplan
+            plan = await Http.GetFromJsonAsync<Core.Models.Elevplan>($"api/elevplan/{elevId}");
             selectedPeriod = plan?.Praktikperioder.FirstOrDefault();
         }
     }
@@ -73,7 +78,7 @@ else
         }
     }
 
-    private async Task Toggle(Opgave op)
+    private async Task Toggle(Core.Models.Opgave op)
     {
         op.Gennemført = !op.Gennemført;
         await Http.PostAsJsonAsync(

@@ -20,10 +20,10 @@ namespace Core.Models
         public string Aftaleform { get; set; } = default!;
 
         [BsonElement("skole")]
-        public string Skole { get; set; } = default!;
+        public string Skole { get; set; } = default!;    // ← Semikolon tilføjet
 
         [BsonElement("praktikperioder")]
-        public List<Praktikperiode> Praktikperioder { get; set; } = new();
+        public List<Praktikperiode> Praktikperioder { get; set; } = new();  // ← Initialiseret
 
         [BsonElement("oprettet_dato")]
         public DateTime OprettetDato { get; set; }
@@ -44,7 +44,7 @@ namespace Core.Models
         public Skoleperiode Skoleperiode { get; set; } = default!;
 
         [BsonElement("opgaver")]
-        public List<Opgave> Opgaver { get; set; } = new();
+        public List<Opgave> Opgaver { get; set; } = new();  // ← Initialiseret
     }
 
     public class Skoleperiode
