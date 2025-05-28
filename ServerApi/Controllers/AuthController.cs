@@ -1,23 +1,30 @@
 using System;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Core.Interface;
+using Microsoft.AspNetCore.Identity;
+using ServerApi.Interface;
 using Core.Models;
-using Microsoft.AspNetCore.Http;
-using MongoDB.Bson;
+using System.Threading.Tasks;
 
 namespace ServerApi.Controllers
 {
     [ApiController]
-    [Route("api/auth")] // 👈 Fast og tydelig
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAppUser _appUserRepo;
+        private readonly IElevplan _elevplanService;
 
-        public AuthController(IAppUser appUserRepo)
+        public AuthController(IAppUser appUserRepo, IElevplan elevplanService)
         {
-            _appUserRepo = appUserRepo;
+            _appUserRepo    = appUserRepo;
+            _elevplanService = elevplanService;
+        }
+
+        public class RegisterResponse
+        {
+            public string Message { get; set; } = default!;
+            public string Password { get; set; } = default!;
+            public string? ElevId { get; set; }
         }
 
         [HttpPost("register")]
@@ -29,67 +36,49 @@ namespace ServerApi.Controllers
             if (await _appUserRepo.EmailExistsAsync(newUser.Email))
                 return Conflict("En bruger med denne email findes allerede.");
 
-            // Hash adgangskoden her
-            var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<AppUser>();
-            newUser.PasswordHash = hasher.HashPassword(newUser, newUser.PasswordHash);
+            // Hash password
+            var hasher = new PasswordHasher<AppUser>();
+            var rawPassword = newUser.PasswordHash;
+            newUser.PasswordHash = hasher.HashPassword(newUser, rawPassword);
             newUser.MustChangePassword = true;
             newUser.Id = MongoDB.Bson.ObjectId.GenerateNewId();
             newUser.CreatedAt = DateTime.UtcNow;
 
+            // Gem bruger
             await _appUserRepo.CreateAsync(newUser);
 
-            return Ok(new { Message = "Bruger oprettet", Password = "[GENERERET]" }); // Du kan fjerne password hvis ikke nødvendig
-        }
+            string? assignedElevId = null;
 
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            var user = await _appUserRepo.GetByEmailAsync(request.Email);
-            if (user == null)
-                return Unauthorized("Ugyldig email eller adgangskode");
-
-            var hasher = new PasswordHasher<AppUser>();
-            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
-
-            if (result == PasswordVerificationResult.Failed)
-                return Unauthorized("Ugyldig email eller adgangskode");
-
-            HttpContext.Session.SetString("user_email", user.Email);
-            HttpContext.Session.SetString("user_role", user.Role);
-
-            return Ok(new
+            // Opret elevplan hvis det er en elev
+            if (newUser.Role == "Elev")
             {
-                Email = user.Email,
-                Name = user.Name,
-                Role = user.Role,
-                MustChangePassword = user.MustChangePassword
-            });
+                var template = await _elevplanService.GetTemplateAsync();
+                if (template != null)
+                {
+                    var newPlan = new Elevplan
+                    {
+                        // ElevplanRepository genererer selv unikt int Id
+                        ElevId         = newUser.Id.ToString(),
+                        ElevNavn       = newUser.Name ?? string.Empty,
+                        Aftaleform     = template.Aftaleform,
+                        Skole          = template.Skole,
+                        Praktikperioder = template.Praktikperioder,
+                        OprettetDato   = DateTime.UtcNow,
+                        OpdateretDato  = DateTime.UtcNow
+                    };
+                    await _elevplanService.CreateAsync(newPlan);
+                    assignedElevId = newPlan.ElevId;
+                }
+            }
+
+            // Returnér besked, kode og evt. ElevId
+            var result = new RegisterResponse
+            {
+                Message = "Bruger oprettet",
+                Password = rawPassword,
+                ElevId = assignedElevId
+            };
+            return Ok(result);
         }
-
-        [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
-        {
-            var user = await _appUserRepo.GetByEmailAsync(model.Email);
-            if (user == null)
-                return NotFound("Bruger ikke fundet");
-
-            var hasher = new PasswordHasher<AppUser>();
-            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, model.CurrentPassword);
-
-            if (result == PasswordVerificationResult.Failed)
-                return BadRequest(new { error = "Nuværende adgangskode er forkert" });
-
-            user.PasswordHash = hasher.HashPassword(user, model.NewPassword);
-            user.MustChangePassword = false;
-
-            await _appUserRepo.UpdateAsync(user.Id, user);
-
-
-            return Ok("Adgangskode opdateret");
-        }
-
-
-
     }
 }

@@ -1,4 +1,6 @@
+
 @page "/opretuser"
+@using System.Text.Json.Serialization
 @using Core.Models
 @inject HttpClient Http
 @inject NavigationManager Nav
@@ -23,11 +25,16 @@
 
             <div class="mb-3">
                 <label>Rolle</label>
-                <InputText @bind-Value="newUser.Role" class="form-control" />
+                <InputSelect @bind-Value="newUser.Role" class="form-control">
+                    <option value="">Vælg rolle</option>
+                    <option value="Elev">Elev</option>
+                    <option value="Teacher">Underviser</option>
+                    <option value="Admin">Admin</option>
+                </InputSelect>
             </div>
 
             <div class="form-buttons">
-                <button class="btn btn-secondary" @onclick="Tilbage">Annullér</button>
+                <button type="button" class="btn btn-secondary" @onclick="Tilbage">Annullér</button>
                 <button type="submit" class="btn btn-primary">Opret bruger</button>
             </div>
         </EditForm>
@@ -37,9 +44,14 @@
             <div class="generated-password mt-4">
                 <h5>Genereret adgangskode:</h5>
                 <InputText @bind-Value="generatedPassword" class="form-control" readonly />
-                <p class="text-muted mt-2">
-                    Kopiér denne kode og send den manuelt til den nye bruger.
-                </p>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(generatedElevId))
+        {
+            <div class="generated-elevid mt-3">
+                <h5>Elev ID:</h5>
+                <InputText @bind-Value="generatedElevId" class="form-control" readonly />
             </div>
         }
 
@@ -53,23 +65,38 @@
 @code {
     private AppUser newUser = new();
     private string? generatedPassword;
+    private string? generatedElevId;
     private string? message;
+
+    private record RegisterResponse(
+        string Message,
+        string Password,
+        string? ElevId);
 
     private async Task HandleRegister()
     {
         generatedPassword = GenerateRandomPassword();
         newUser.PasswordHash = generatedPassword;
+        message = null;
+        generatedElevId = null;
 
         var response = await Http.PostAsJsonAsync("api/auth/register", newUser);
-
         if (response.IsSuccessStatusCode)
         {
-            message = "Bruger oprettet!";
+            var result = await response.Content.ReadFromJsonAsync<RegisterResponse>();
+            if (result is not null)
+            {
+                message = result.Message;
+                generatedPassword = result.Password;
+                generatedElevId = result.ElevId;
+            }
+            // Reset form model
             newUser = new();
         }
         else
         {
-            message = "Fejl: " + await response.Content.ReadAsStringAsync();
+            var error = await response.Content.ReadAsStringAsync();
+            message = "Fejl: " + error;
             generatedPassword = null;
         }
     }
@@ -80,6 +107,8 @@
     {
         const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
         var random = new Random();
-        return new string(Enumerable.Range(0, 10).Select(_ => chars[random.Next(chars.Length)]).ToArray());
+        return new string(Enumerable.Range(0, 10)
+            .Select(_ => chars[random.Next(chars.Length)])
+            .ToArray());
     }
 }

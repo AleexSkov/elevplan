@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using MongoDB.Bson;
 using Core.Models;
-using Core.Interface;
+using ServerApi.Interface;
 
 namespace ServerApi.Repository
 {
@@ -13,12 +10,9 @@ namespace ServerApi.Repository
     {
         private readonly IMongoCollection<Elevplan> _elevplanCollection;
 
-        public ElevplanRepository()
+        public ElevplanRepository(IMongoCollection<Elevplan> elevplanCollection)
         {
-            var mongoUri = "mongodb+srv://benjaminlorenzen:pdx45bjd@cluster0.55cag.mongodb.net/Comwell?retryWrites=true&w=majority";
-            var client = new MongoClient(mongoUri);
-            var database = client.GetDatabase("Comwell");
-            _elevplanCollection = database.GetCollection<Elevplan>("Elevplan");
+            _elevplanCollection = elevplanCollection;
         }
 
         public async Task<List<Elevplan>> GetAllAsync()
@@ -26,38 +20,24 @@ namespace ServerApi.Repository
             return await _elevplanCollection.Find(_ => true).ToListAsync();
         }
 
-        public async Task<Elevplan?> GetByElevIdAsync(string elevId)
+        public async Task<Elevplan?> GetTemplateAsync()
         {
-            return await _elevplanCollection.Find(e => e.elev_id == elevId).FirstOrDefaultAsync();
+            // Hent template-dokumentet med elev_id = "TBD"
+            var filter = Builders<Elevplan>.Filter.Eq(p => p.ElevId, "TBD");
+            return await _elevplanCollection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateOpgaveAsync(string elevId, int periodeNummer, string kategori, string beskrivelse, bool gennemført)
+        public async Task CreateAsync(Elevplan plan)
         {
-            var elevplan = await GetByElevIdAsync(elevId);
-            
-            if (elevplan != null)
-            {
-                var periode = elevplan.praktikperioder?.FirstOrDefault(p => p.periode_nummer == periodeNummer);
-                var opgave = periode?.opgaver?.FirstOrDefault(o => o.kategori == kategori && o.beskrivelse == beskrivelse);
-                
-                if (opgave != null)
-                {
-                    opgave.gennemført = gennemført;
-                    elevplan.opdateret_dato = DateTime.UtcNow;
-                    
-                    await _elevplanCollection.ReplaceOneAsync(
-                        e => e.elev_id == elevId, 
-                        elevplan
-                    );
-                }
-            }
-        }
+            // Generer nyt unikt int Id i repository
+            var maxIdDoc = await _elevplanCollection
+                .Find(_ => true)
+                .SortByDescending(p => p.Id)
+                .Limit(1)
+                .FirstOrDefaultAsync();
 
-        public async Task CreateAsync(Elevplan elevplan)
-        {
-            elevplan.oprettet_dato = DateTime.UtcNow;
-            elevplan.opdateret_dato = DateTime.UtcNow;
-            await _elevplanCollection.InsertOneAsync(elevplan);
+            plan.Id = (maxIdDoc?.Id ?? 0) + 1;
+            await _elevplanCollection.InsertOneAsync(plan);
         }
     }
 }

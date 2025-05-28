@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Core.Models;
-using Core.Interface;
+using ServerApi.Interface;
 
 namespace ServerApi.Repository
 {
@@ -12,12 +12,9 @@ namespace ServerApi.Repository
     {
         private readonly IMongoCollection<AppUser> _appUserCollection;
 
-        public AppUserRepository()
+        public AppUserRepository(IMongoCollection<AppUser> appUserCollection)
         {
-            var mongoUri = "mongodb+srv://benjaminlorenzen:pdx45bjd@cluster0.55cag.mongodb.net/Comwell?retryWrites=true&w=majority";
-            var client = new MongoClient(mongoUri);
-            var database = client.GetDatabase("Comwell");
-            _appUserCollection = database.GetCollection<AppUser>("AppUsers");
+            _appUserCollection = appUserCollection;
         }
 
         public async Task<List<AppUser>> GetAllAsync()
@@ -45,14 +42,11 @@ namespace ServerApi.Repository
         {
             return await _appUserCollection.Find(u => u.Email == email).AnyAsync();
         }
-        
+
         public async Task UpdateAsync(ObjectId id, AppUser updatedUser)
         {
-            var filter = Builders<AppUser>.Filter.Eq(u => u.Id, id); 
+            var filter = Builders<AppUser>.Filter.Eq(u => u.Id, id);
             await _appUserCollection.ReplaceOneAsync(filter, updatedUser);
         }
-
-
-
     }
 }

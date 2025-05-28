@@ -1,3 +1,4 @@
+<!--
 @page "/elevplan"
 @using Core.Services
 @inject IElevplanService ElevplanService
@@ -5,7 +6,7 @@
 <PageTitle>Elevplaner</PageTitle>
 
 <div class="elevplan-container">
-    <!-- Top Bar -->
+     Top Bar 
     <div class="topbar">
         <div class="topbar-content">
             <h1>Elevplaner</h1>
@@ -28,7 +29,7 @@
     <div class="main-content">
         @if (currentElevplan != null && currentElevplan.Elev != null)
         {
-            <!-- Elev Info Header -->
+            
             <div class="elev-header">
                 <div class="elev-title">
                     <i class="fas fa-users"></i>
@@ -57,7 +58,7 @@
                 </div>
             </div>
 
-            <!-- Period Tabs -->
+           
             <div class="tabs-container">
                 <div class="tabs">
                     @foreach (var period in currentElevplan.Perioder)
@@ -70,7 +71,7 @@
                     }
                 </div>
 
-                <!-- Period Content -->
+                
                 @if (currentPeriod != null)
                 {
                     <div class="tab-content">
@@ -82,7 +83,7 @@
                             </div>
                         </div>
 
-                        <!-- Categories Container -->
+                        
                         <div class="categories-container">
                             @foreach (var category in currentPeriod.Categories)
                             {
@@ -132,7 +133,7 @@
                 }
             </div>
 
-            <!-- Progress Summary -->
+            
             <div class="progress-summary">
                 <h3>Fremskridt oversigt</h3>
                 <div class="progress-grid">
@@ -245,3 +246,4 @@
         Console.WriteLine("Opret ny elev - implementer senere");
     }
 }
+-->

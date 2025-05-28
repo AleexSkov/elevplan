@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Core.Models
@@ -8,38 +7,65 @@ namespace Core.Models
     public class Elevplan
     {
         [BsonId]
-        public ObjectId _id { get; set; }
-        public string elev_id { get; set; } = string.Empty;
-        public string elev_navn { get; set; } = string.Empty;
-        public string aftaleform { get; set; } = string.Empty;
-        public string skole { get; set; } = string.Empty;
-        public List<Praktikperiode> praktikperioder { get; set; } = new();
-        public DateTime oprettet_dato { get; set; }
-        public DateTime opdateret_dato { get; set; }
+        // Fortæller, at _id er et heltal (int)
+        [BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
+        public int Id { get; set; }
+
+        [BsonElement("elev_id")]
+        public string ElevId { get; set; } = default!;
+
+        [BsonElement("elev_navn")]
+        public string ElevNavn { get; set; } = default!;
+
+        [BsonElement("aftaleform")]
+        public string Aftaleform { get; set; } = default!;
+
+        [BsonElement("skole")]
+        public string Skole { get; set; } = default!;
+
+        [BsonElement("praktikperioder")]
+        public List<Praktikperiode> Praktikperioder { get; set; } = new();
+
+        [BsonElement("oprettet_dato")]
+        public DateTime OprettetDato { get; set; }
+
+        [BsonElement("opdateret_dato")]
+        public DateTime OpdateretDato { get; set; }
     }
 
     public class Praktikperiode
     {
-        public int periode_nummer { get; set; }
-        public int varighed_uger { get; set; }
-        public Skoleperiode? skoleperiode { get; set; }
-        public List<Opgave> opgaver { get; set; } = new();
+        [BsonElement("periode_nummer")]
+        public int PeriodeNummer { get; set; }
+        [BsonElement("varighed_uger")]
+        public int VarighedUger { get; set; }
+        [BsonElement("skoleperiode")]
+        public Skoleperiode Skoleperiode { get; set; }
+        [BsonElement("opgaver")]
+        public List<Opgave> Opgaver { get; set; }
     }
-
     public class Skoleperiode
     {
-        public DateTime? start_dato { get; set; }
-        public DateTime? slut_dato { get; set; }
-        public int varighed_uger { get; set; }
+        [BsonElement("start_dato")]
+        public DateTime? StartDato { get; set; }
+        [BsonElement("slut_dato")]
+        public DateTime? SlutDato { get; set; }
+        [BsonElement("varighed_uger")]
+        public int VarighedUger { get; set; }
     }
-
     public class Opgave
     {
-        public string kategori { get; set; } = string.Empty;
-        public string beskrivelse { get; set; } = string.Empty;
-        public string ansvarlig { get; set; } = string.Empty;
-        public string initiator { get; set; } = string.Empty;
-        public string tidslinje { get; set; } = string.Empty;
-        public bool gennemført { get; set; }
+        [BsonElement("kategori")]
+        public string Kategori { get; set; }
+        [BsonElement("beskrivelse")]
+        public string Beskrivelse { get; set; }
+        [BsonElement("ansvarlig")]
+        public string Ansvarlig { get; set; }
+        [BsonElement("initiator")]
+        public string Initiator { get; set; }
+        [BsonElement("tidslinje")]
+        public string Tidslinje { get; set; }
+        [BsonElement("gennemført")]
+        public bool Gennemført { get; set; }
     }
 }
