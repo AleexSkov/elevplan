@@ -47,7 +47,7 @@ namespace Core.Services
 
             return new ElevplanViewModel
             {
-                Elev = new ElevInfo 
+                Elev = new ElevInfo
                 {
                     Id = elevplan.elev_id,
                     Navn = elevplan.elev_navn,

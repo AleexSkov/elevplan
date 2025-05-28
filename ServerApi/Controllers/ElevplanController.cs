@@ -20,7 +20,7 @@ namespace ServerApi.Controllers
         [HttpGet("raw")] // ✅ Tilføj endpoint for raw data
         public async Task<ActionResult<List<Elevplan>>> GetAll()
         {
-            var elevplaner = await _elevplanService.GetAllAsync(); 
+            var elevplaner = await _elevplanService.GetAllAsync();
             return Ok(elevplaner);
         }
     }

@@ -18,7 +18,7 @@ namespace Core.Services
     public class ElevInfo
     {
         public string Id { get; set; } = string.Empty;
-        public string Navn { get; set; } = string.Empty; 
+        public string Navn { get; set; } = string.Empty;
         public string Skole { get; set; } = string.Empty;
         public string Aftaleform { get; set; } = string.Empty;
         public DateTime OprettetDato { get; set; }

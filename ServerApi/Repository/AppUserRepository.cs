@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Core.Models;
-using Core.Interface; 
+using Core.Interface;
 
 namespace ServerApi.Repository
 {
