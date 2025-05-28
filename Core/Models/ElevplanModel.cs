@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Core.Models
@@ -7,7 +8,7 @@ namespace Core.Models
     public class Elevplan
     {
         [BsonId]
-        [BsonRepresentation(MongoDB.Bson.BsonType.Int32)]
+        [BsonRepresentation(BsonType.Int32)]
         public int Id { get; set; }
 
         [BsonElement("elev_id")]
@@ -20,7 +21,7 @@ namespace Core.Models
         public string Aftaleform { get; set; } = default!;
 
         [BsonElement("skole")]
-        public string Skole { get; set; } = default!;  // <- semikolon tilføjet
+        public string Skole { get; set; } = default!;
 
         [BsonElement("praktikperioder")]
         public List<Praktikperiode> Praktikperioder { get; set; } = new();
@@ -44,7 +45,7 @@ namespace Core.Models
         public Skoleperiode Skoleperiode { get; set; } = default!;
 
         [BsonElement("opgaver")]
-        public List<Opgave> Opgaver { get; set; } = new();
+        public List<Delmaal> Opgaver { get; set; } = new();
     }
 
     public class Skoleperiode
@@ -57,26 +58,5 @@ namespace Core.Models
 
         [BsonElement("varighed_uger")]
         public int VarighedUger { get; set; }
-    }
-
-    public class Opgave
-    {
-        [BsonElement("kategori")]
-        public string Kategori { get; set; } = default!;
-
-        [BsonElement("beskrivelse")]
-        public string Beskrivelse { get; set; } = default!;
-
-        [BsonElement("ansvarlig")]
-        public string Ansvarlig { get; set; } = default!;
-
-        [BsonElement("initiator")]
-        public string Initiator { get; set; } = default!;
-
-        [BsonElement("tidslinje")]
-        public string Tidslinje { get; set; } = default!;
-
-        [BsonElement("gennemført")]
-        public bool Gennemført { get; set; }
     }
 }

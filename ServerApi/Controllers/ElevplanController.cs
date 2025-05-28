@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ServerApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/elevplaner")]
     public class ElevplanController : ControllerBase
     {
         private readonly IElevplan _elevplanService;
@@ -15,12 +15,12 @@ namespace ServerApi.Controllers
         public ElevplanController(IElevplan elevplanService)
             => _elevplanService = elevplanService;
 
-        // GET api/elevplan
+        // GET api/elevplaner
         [HttpGet]
         public async Task<ActionResult<List<Elevplan>>> GetAll()
             => Ok(await _elevplanService.GetAllAsync());
 
-        // GET api/elevplan/{elevId}
+        // GET api/elevplaner/{elevId}
         [HttpGet("{elevId}")]
         public async Task<ActionResult<Elevplan?>> GetByElevId(string elevId)
         {
@@ -28,7 +28,7 @@ namespace ServerApi.Controllers
             return plan == null ? NotFound() : Ok(plan);
         }
 
-        // POST api/elevplan/{elevId}/opgave
+        // POST api/elevplaner/{elevId}/opgave
         [HttpPost("{elevId}/opgave")]
         public async Task<IActionResult> UpdateOpgave(
             string elevId,
