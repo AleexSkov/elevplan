@@ -12,20 +12,63 @@
       <div class="user-display">@userName - @userRole</div>
     </div>
     <nav class="menu">
-      <a href="/dashboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/home.png" />Dashboard</a>
-      <a href="/dashboardchef"><img src="https://img.icons8.com/ios-filled/20/ffffff/home.png" />DashboardK</a>
-      <a href="/min-elevplan"><img src="https://img.icons8.com/ios-filled/20/ffffff/task.png" />Elevplan</a>
-      <a href="/opret"><img src="https://img.icons8.com/ios-filled/20/ffffff/task.png" />Opret Elevplan</a>
-      <a href="/quiz"><img src="https://img.icons8.com/ios-filled/20/ffffff/book.png" />Quiz</a>
-      <a href="/leaderboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/trophy.png" />Leaderboard</a>
-      <a href="/forum"><img src="https://img.icons8.com/ios-filled/20/ffffff/topic.png" />Forum</a>
-      <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/upload.png" />Dele opgaver</a>
-      <a href="/profil"><img src="https://img.icons8.com/ios-filled/20/ffffff/user.png" />Profil</a>
+      @* Check role case-insensitively *@
+      @if (userRole?.ToLowerInvariant() == "admin")
+      {
+        <a href="/dashboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/home.png" />
+          Dashboard
+        </a>
+        <a href="/DashboardAdmin"><img src="https://img.icons8.com/ios-filled/20/ffffff/administrator.png" />
+          Admin Dashboard
+        </a>
+        <a href="/admin/elevplan"><img src="https://img.icons8.com/ios-filled/20/ffffff/task.png" />
+          Alle Elevplaner
+        </a>
+        <a href="/forum"><img src="https://img.icons8.com/ios-filled/20/ffffff/topic.png" />
+          Forum
+        </a>
+        <a href="/profil"><img src="https://img.icons8.com/ios-filled/20/ffffff/user.png" />
+          Profil
+        </a>
+      }
+      else
+      {
+        <a href="/dashboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/home.png" />
+          Dashboard
+        </a>
+        <a href="/min-elevplan"><img src="https://img.icons8.com/ios-filled/20/ffffff/task.png" />
+          Elevplan
+        </a>
+        <a href="/quiz"><img src="https://img.icons8.com/ios-filled/20/ffffff/book.png" />
+          Quiz
+        </a>
+        <a href="/leaderboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/trophy.png" />
+          Leaderboard
+        </a>
+        <a href="/opret"><img src="https://img.icons8.com/ios-filled/20/ffffff/task.png" />
+          Opret Elevplan
+        </a>
+        <a href="/forum"><img src="https://img.icons8.com/ios-filled/20/ffffff/topic.png" />
+          Forum
+        </a>
+        <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/upload.png" />
+          Dele opgaver
+        </a>
+        <a href="/profil"><img src="https://img.icons8.com/ios-filled/20/ffffff/user.png" />
+          Profil
+        </a>
+      }
+
       <div class="menu-footer">
-        <a href="/opretuser"><img src="https://img.icons8.com/ios-filled/20/ffffff/add-administrator.png" />(HR) Opret Bruger</a>
-        <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/settings.png"/>Indstillinger</a>
-        <a @onclick="Logout" style="cursor:pointer">
-          <img src="https://img.icons8.com/ios-filled/20/ffffff/exit.png"/> Log ud
+        <a href="/opretuser"><img src="https://img.icons8.com/ios-filled/20/ffffff/add-administrator.png" />
+          (HR) Opret Bruger
+        </a>
+        <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/settings.png"/>
+          Indstillinger
+        </a>
+        <a @onclick="Logout" class="logout-link">
+          <img src="https://img.icons8.com/ios-filled/20/ffffff/exit.png"/>
+           Log ud
         </a>
       </div>
     </nav>

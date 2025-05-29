@@ -23,7 +23,7 @@ builder.Services.AddCors(opts =>
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
-// 2) Registrér dine repositories i DI (MUST be *before* Build())
+// 2) Registrér dine repositories i DI
 // ──────────────────────────────────────────────────────────────────────────────
 builder.Services.AddSingleton<IAppUser,  AppUserRepository>();
 builder.Services.AddSingleton<IElevplan, ElevplanRepository>();
