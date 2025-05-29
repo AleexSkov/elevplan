@@ -1,3 +1,4 @@
+// ElevplanAdmin.razor
 @page "/admin/elevplan/{elevId}"
 @layout MainLayout
 
@@ -6,6 +7,7 @@
 @inject HttpClient Http
 
 <h3>Elevplan for @elevplan?.ElevNavn</h3>
+
 @if (elevplan is null)
 {
     <p>Indlæser...</p>
@@ -18,8 +20,11 @@ else
 @code {
     [Parameter] public string elevId { get; set; } = default!;
     private Elevplan? elevplan;
+
     protected override async Task OnInitializedAsync()
     {
-        elevplan = await Http.GetFromJsonAsync<Elevplan>($"api/elevplaner/{elevId}");
+        elevplan = await Http.GetFromJsonAsync<Elevplan>(
+            $"/api/elevplaner/{elevId}"
+        );
     }
 }
