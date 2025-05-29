@@ -2,18 +2,22 @@
 @layout MainLayout
 
 @using Core.Models
+@using ComwellElevplan.Components
 @using System.Net.Http.Json
-@using Microsoft.AspNetCore.Components.Forms
 @inject HttpClient Http
 
 <h3>Admin Dashboard</h3>
 <p>Oversigt over elever og deres planer:</p>
 <table class="table">
     <thead>
-        <tr><th>ElevId</th><th>Navn</th><th>Handling</th></tr>
+    <tr>
+        <th>ElevId</th>
+        <th>Navn</th>
+        <th>Handling</th>
+    </tr>
     </thead>
     <tbody>
-    @foreach(var e in elever)
+    @foreach (var e in elever)
     {
         <tr>
             <td>@e.ElevId</td>
@@ -28,187 +32,27 @@
     </tbody>
 </table>
 
-@* Modal-dialog with editing for admin *@
-@if (selectedElevplan is not null)
+@if (showModal)
 {
-    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Elevplan for @selectedElevplan.ElevNavn</h5>
-                    <button type="button" class="close" @onclick="CloseModal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    @foreach(var periode in selectedElevplan.Praktikperioder)
-                    {
-                        <div class="mb-3">
-                            <h5>Periode @periode.PeriodeNummer (@periode.VarighedUger uger)</h5>
-                            <ul class="list-group">
-                                @foreach(var delmaal in periode.Opgaver)
-                                {
-                                    <li class="list-group-item">
-                                        @if (editingId == delmaal.DelmaalId)
-                                        {
-                                            <EditForm Model="editingDelmaal" OnValidSubmit="SaveEdit">
-                                                <DataAnnotationsValidator />
-                                                <div class="row g-2">
-                                                    <div class="col-md-2">
-                                                        <InputText class="form-control" @bind-Value="editingDelmaal.Kategori" />
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <InputText class="form-control" @bind-Value="editingDelmaal.Beskrivelse" />
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <InputText class="form-control" @bind-Value="editingDelmaal.Ansvarlig" />
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <InputText class="form-control" @bind-Value="editingDelmaal.Initiator" />
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <InputText class="form-control" @bind-Value="editingDelmaal.Tidslinje" />
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <button type="submit" class="btn btn-sm btn-success me-2">Gem</button>
-                                                    <button type="button" class="btn btn-sm btn-secondary" @onclick="CancelEdit">Annuller</button>
-                                                </div>
-                                            </EditForm>
-                                        }
-                                        else
-                                        {
-                                            <div class="d-flex align-items-center">
-                                                <input type="checkbox" class="form-check-input me-2" checked="@delmaal.Gennemført" @onclick="() => Toggle(delmaal, periode.PeriodeNummer)" />
-                                                <div class="flex-grow-1">
-                                                    <strong>@delmaal.Kategori:</strong> @delmaal.Beskrivelse<br />
-                                                    <small>Ansvarlig: @delmaal.Ansvarlig, Initiator: @delmaal.Initiator, Deadline: @delmaal.Tidslinje</small>
-                                                </div>
-                                                <button class="btn btn-sm btn-primary ms-2" @onclick="() => StartEdit(delmaal)">Rediger</button>
-                                                <button class="btn btn-sm btn-danger ms-2" @onclick="() => DeleteDelmaal(delmaal, periode.PeriodeNummer)">Slet</button>
-                                            </div>
-                                        }
-                                    </li>
-                                }
-                            </ul>
-                            <div class="mt-3">
-                                <h6>Tilføj nyt delmål</h6>
-                                <EditForm Model="newDelmaal" OnValidSubmit="() => AddDelmaal(periode.PeriodeNummer)">
-                                    <DataAnnotationsValidator />
-                                    <div class="row g-2">
-                                        <div class="col-md-2"><InputText class="form-control" @bind-Value="newDelmaal.Kategori" placeholder="Kategori" /></div>
-                                        <div class="col-md-4"><InputText class="form-control" @bind-Value="newDelmaal.Beskrivelse" placeholder="Beskrivelse" /></div>
-                                        <div class="col-md-2"><InputText class="form-control" @bind-Value="newDelmaal.Ansvarlig" placeholder="Ansvarlig" /></div>
-                                        <div class="col-md-2"><InputText class="form-control" @bind-Value="newDelmaal.Initiator" placeholder="Initiator" /></div>
-                                        <div class="col-md-2"><InputText class="form-control" @bind-Value="newDelmaal.Tidslinje" placeholder="Deadline" /></div>
-                                    </div>
-                                    <button type="submit" class="btn btn-sm btn-primary mt-2">Tilføj</button>
-                                </EditForm>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="CloseModal">Luk</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <ElevplanModal ElevId="@selectedId"
+                   IsAdmin="true"
+                   OnClose="() => showModal = false" />
 }
 
 @code {
     private List<Elevplan> elever = new();
-    private Elevplan? selectedElevplan;
-    private Guid? editingId;
-    private Delmaal editingDelmaal = new Delmaal();
-    private Delmaal newDelmaal = new Delmaal();
+    private bool showModal;
+    private string selectedId = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         elever = await Http.GetFromJsonAsync<List<Elevplan>>("/api/elevplaner");
     }
 
-    private async Task OpenModal(string elevId)
+    private Task OpenModal(string id)
     {
-        selectedElevplan = await Http.GetFromJsonAsync<Elevplan>($"/api/elevplaner/{elevId}");
-        editingId = null;
-    }
-
-    private void CloseModal()
-    {
-        selectedElevplan = null;
-    }
-
-    private void StartEdit(Delmaal delmaal)
-    {
-        editingId = delmaal.DelmaalId;
-        editingDelmaal = new Delmaal
-        {
-            DelmaalId = delmaal.DelmaalId,
-            Kategori = delmaal.Kategori,
-            Beskrivelse = delmaal.Beskrivelse,
-            Ansvarlig = delmaal.Ansvarlig,
-            Initiator = delmaal.Initiator,
-            Tidslinje = delmaal.Tidslinje,
-            Gennemført = delmaal.Gennemført
-        };
-    }
-
-    private void CancelEdit()
-    {
-        editingId = null;
-    }
-
-    private async Task SaveEdit()
-    {
-        if (selectedElevplan == null || editingId == null)
-            return;
-        var periode = selectedElevplan.Praktikperioder.First(p => p.Opgaver.Any(d => d.DelmaalId == editingDelmaal.DelmaalId));
-        var response = await Http.PutAsJsonAsync(
-            $"/api/elevplaner/{selectedElevplan.ElevId}/perioder/{periode.PeriodeNummer}/delmaal/{editingDelmaal.DelmaalId}",
-            editingDelmaal);
-        if (response.IsSuccessStatusCode)
-        {
-            var idx = periode.Opgaver.FindIndex(d => d.DelmaalId == editingDelmaal.DelmaalId);
-            periode.Opgaver[idx] = editingDelmaal;
-            editingId = null;
-        }
-    }
-
-    private async Task Toggle(Delmaal delmaal, int periodeNummer)
-    {
-        delmaal.Gennemført = !delmaal.Gennemført;
-        await Http.PutAsJsonAsync(
-            $"/api/elevplaner/{selectedElevplan!.ElevId}/perioder/{periodeNummer}/delmaal/{delmaal.DelmaalId}",
-            delmaal);
-    }
-
-    private async Task AddDelmaal(int periodeNummer)
-    {
-        if (selectedElevplan == null)
-            return;
-        var response = await Http.PostAsJsonAsync(
-            $"/api/elevplaner/{selectedElevplan.ElevId}/perioder/{periodeNummer}/delmaal", newDelmaal);
-        if (response.IsSuccessStatusCode)
-        {
-            var created = await response.Content.ReadFromJsonAsync<Delmaal>();
-            var periode = selectedElevplan.Praktikperioder.First(p => p.PeriodeNummer == periodeNummer);
-            periode.Opgaver.Add(created!);
-            newDelmaal = new Delmaal();
-        }
-    }
-
-    private async Task DeleteDelmaal(Delmaal delmaal, int periodeNummer)
-    {
-        if (selectedElevplan == null)
-            return;
-        var response = await Http.DeleteAsync(
-            $"/api/elevplaner/{selectedElevplan.ElevId}/perioder/{periodeNummer}/delmaal/{delmaal.DelmaalId}");
-        if (response.IsSuccessStatusCode)
-        {
-            var periode = selectedElevplan.Praktikperioder.First(p => p.PeriodeNummer == periodeNummer);
-            periode.Opgaver.Remove(delmaal);
-            if (editingId == delmaal.DelmaalId) editingId = null;
-        }
+        selectedId = id;
+        showModal = true;
+        return Task.CompletedTask;
     }
 }
