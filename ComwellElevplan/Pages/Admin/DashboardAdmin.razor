@@ -8,8 +8,10 @@
 @using ComwellElevplan.Components
 @using System.Net.Http.Json
 @using Microsoft.AspNetCore.Components
+@using Microsoft.JSInterop
 
 @inject HttpClient Http
+@inject IJSRuntime JS
 
 <h3>Admin Dashboard</h3>
 
@@ -25,7 +27,8 @@
             <span>Sorter efter: Navn (A-Z)</span>
         }
     </button>
-    <span class="text-muted">(Tryk for at skifte sortering)</span>
+    <button class="btn btn-success" @onclick="ExportSummaryCsv">Eksporter oversigt CSV</button>
+    <span class="text-muted ms-2">(Tryk for at skifte sortering eller eksportér)</span>
 </div>
 
 <table class="table">
@@ -45,9 +48,7 @@
             <td>@elev.ElevNavn</td>
             <td>@TotalCompleted(elev)</td>
             <td>
-                <button class="btn btn-sm btn-primary" @onclick="() => OpenModal(elev.ElevId)">
-                    Se plan
-                </button>
+                <button class="btn btn-sm btn-primary" @onclick="() => OpenModal(elev.ElevId)">Se plan</button>
             </td>
         </tr>
     }
@@ -56,9 +57,7 @@
 
 @if (showModal)
 {
-    <ElevplanModal ElevId="@selectedId"
-                   IsAdmin="true"
-                   OnClose="() => showModal = false" />
+    <ElevplanModal ElevId="@selectedId" IsAdmin="true" OnClose="() => showModal = false" />
 }
 
 @code {
@@ -81,19 +80,25 @@
     }
 
     private int TotalCompleted(Elevplan e) =>
-        e.Praktikperioder?
-         .SelectMany(p => p.Opgaver)
-         .Count(d => d.Gennemført) ?? 0;
+        e.Praktikperioder?.SelectMany(p => p.Opgaver).Count(d => d.Gennemført) ?? 0;
 
-    private void ToggleSort()
-    {
-        sortByCompleted = !sortByCompleted;
-    }
+    private void ToggleSort() => sortByCompleted = !sortByCompleted;
 
     private Task OpenModal(string id)
     {
         selectedId = id;
         showModal = true;
         return Task.CompletedTask;
+    }
+
+    private async Task ExportSummaryCsv()
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("ElevId,Navn,Gennemført");
+        foreach (var e in DisplayedElever)
+        {
+            sb.AppendLine($"{e.ElevId},\"{e.ElevNavn}\",{TotalCompleted(e)}");
+        }
+        await JS.InvokeVoidAsync("downloadFile", "elevoversigt.csv", sb.ToString());
     }
 }
