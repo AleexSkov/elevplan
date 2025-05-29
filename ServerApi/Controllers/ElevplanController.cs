@@ -28,6 +28,18 @@ namespace ServerApi.Controllers
             return plan == null ? NotFound() : Ok(plan);
         }
 
+        // NYT: GET api/elevplaner/{elevId}/export
+        [HttpGet("{elevId}/export")]
+        public async Task<IActionResult> ExportByElevId(string elevId)
+        {
+            var plan = await _elevplanService.GetByElevIdAsync(elevId);
+            if (plan == null)
+                return NotFound();
+
+            // Returner hele planen som JSON
+            return Ok(plan);
+        }
+
         // POST api/elevplaner/{elevId}/opgave
         [HttpPost("{elevId}/opgave")]
         public async Task<IActionResult> UpdateOpgave(
