@@ -1,0 +1,25 @@
+@page "/admin/elevplan/{elevId}"
+@layout MainLayout
+
+@using Core.Models
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Elevplan for @elevplan?.ElevNavn</h3>
+@if (elevplan is null)
+{
+    <p>Indlæser...</p>
+}
+else
+{
+    <!-- Genbrug markup fra MinElevplan, men uden rollebegrænsninger -->
+}
+
+@code {
+    [Parameter] public string elevId { get; set; } = default!;
+    private Elevplan? elevplan;
+    protected override async Task OnInitializedAsync()
+    {
+        elevplan = await Http.GetFromJsonAsync<Elevplan>($"api/elevplaner/{elevId}");
+    }
+}

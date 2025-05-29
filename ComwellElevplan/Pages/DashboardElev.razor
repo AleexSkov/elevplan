@@ -1,0 +1,133 @@
+@page "/dashboard"
+@layout MainLayout
+
+@using Core.Models
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<div class="dashboard">
+
+    <!-- Greeting -->
+    <div class="greeting mb-4">
+        <h3>Velkommen tilbage!</h3>
+        @if (plan != null)
+        {
+            <p>Her er en oversigt over din elevplan, <strong>@plan.ElevNavn</strong>.</p>
+        }
+    </div>
+
+    @if (plan is null)
+    {
+        <p>Indlæser data…</p>
+    }
+    else
+    {
+        <!-- Progress Bar -->
+        <div class="mb-3">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar"
+                     style="width: @ProgressPercent%;"
+                     aria-valuenow="@ProgressPercent" aria-valuemin="0" aria-valuemax="100">
+                    @ProgressPercent% gennemført
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats row mb-4">
+            <div class="col-sm-6 col-lg-3">
+                <div class="stat-item p-3 border rounded">
+                    <div class="label">Opnåede delmål</div>
+                    <div class="value display-4">@CompletedCount</div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="stat-item p-3 border rounded">
+                    <div class="label">Mangler stadig</div>
+                    <div class="value display-4">@MissingDelmaal.Count</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panels -->
+        <div class="dashboard-grid row g-4">
+
+            <!-- Mangler i perioden -->
+            <div class="panel col-md-6">
+                <h4>Mangler i perioden</h4>
+                @if (!MissingDelmaal.Any())
+                {
+                    <p class="text-success">Alle delmål er gennemført! 🎉</p>
+                }
+                else
+                {
+                    <ul class="list-group">
+                        @foreach (var d in MissingDelmaal)
+                        {
+                            <li class="list-group-item">
+                                <strong>@d.Kategori:</strong> @d.Beskrivelse
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="panel col-md-6">
+                <h4>Top 3 elever</h4>
+                <ul class="leaderboard-list list-group">
+                    @foreach (var entry in Leaderboard)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>@entry.Rank. @entry.Name</span>
+                            <span class="badge bg-primary rounded-pill">@entry.Score</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+    }
+</div>
+
+@code {
+    private Elevplan? plan;
+    private int CompletedCount { get; set; }
+    private List<Delmaal> MissingDelmaal { get; set; } = new();
+    private int TotalDelmaal { get; set; }
+    private int ProgressPercent { get; set; }
+    private List<LeaderboardEntry> Leaderboard { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
+        if (!string.IsNullOrEmpty(elevId))
+        {
+            plan = await Http.GetFromJsonAsync<Elevplan>($"api/elevplaner/{elevId}");
+            if (plan != null)
+            {
+                var alle = plan.Praktikperioder.SelectMany(p => p.Opgaver).ToList();
+                TotalDelmaal = alle.Count;
+                CompletedCount = alle.Count(d => d.Gennemført);
+                MissingDelmaal = alle.Where(d => !d.Gennemført).ToList();
+                ProgressPercent = TotalDelmaal > 0 ? (int)(CompletedCount * 100.0 / TotalDelmaal) : 0;
+
+                // Mock leaderboard
+                Leaderboard = new List<LeaderboardEntry>
+                {
+                    new() { Rank = 1, Name = "Alice", Score = 1500 },
+                    new() { Rank = 2, Name = "Bob",   Score = 1400 },
+                    new() { Rank = 3, Name = "Clara", Score = 1300 }
+                };
+            }
+        }
+    }
+
+    private class LeaderboardEntry
+    {
+        public int Rank  { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int Score  { get; set; }
+    }
+}
