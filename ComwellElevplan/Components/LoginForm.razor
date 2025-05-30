@@ -4,19 +4,21 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
-
 <h3>Log ind</h3>
 
+<!-- Formular til login med email og adgangskode -->
 <EditForm Model="credentials" OnValidSubmit="HandleLogin">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-3">
         <label>Email</label>
+<!-- Inputfelt til emailadresse -->
         <InputText @bind-Value="credentials.Email" class="form-control" />
     </div>
     <div class="mb-3">
         <label>Adgangskode</label>
+<!-- Inputfelt til adgangskode -->
         <InputText @bind-Value="credentials.Password" type="password" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Log ind</button>
@@ -24,13 +26,16 @@
 
 @if (!string.IsNullOrEmpty(error))
 {
+<!-- Fejlbesked ved mislykket login -->
     <div class="alert alert-danger mt-3">@error</div>
 }
 
 @code {
+/// <summary>Loginoplysninger brugeren indtaster</summary>
     private LoginRequest credentials = new();
     private string? error;
 
+/// <summary>Sender login-data til API og håndterer svar</summary>
     private async Task HandleLogin()
     {
         var resp = await Http.PostAsJsonAsync("api/auth/login", credentials);

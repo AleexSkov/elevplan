@@ -1,24 +1,30 @@
-@page "/min-elevplan"
+@page "/min-elevplan"                   
+<!-- Rute til siden -->
 
-@using Core.Models
+@using Core.Models                      
+<!-- Gør model-klasser som Elevplan og Praktikperiode tilgængelige -->
 @using System.Net.Http.Json
-@inject HttpClient Http
-@inject IJSRuntime JS
+@inject HttpClient Http                 
+<!-- Bruges til at hente elevens data fra API'et -->
+@inject IJSRuntime JS                   
+<!-- Bruges til at læse elevId fra localStorage -->
 
 <h3>Min Elevplan</h3>
 
 @if (plan is null)
 {
-    <p>Indlæser din elevplan…</p>
+    <p>Indlæser din elevplan…</p>        <!-- Ventebesked -->
 }
 else
 {
+    <!-- Info om elev og plan -->
     <div class="mb-3">
         <h4>@plan.ElevNavn</h4>
         <p><strong>Skole:</strong> @plan.Skole</p>
         <p><strong>Aftaleform:</strong> @plan.Aftaleform</p>
     </div>
 
+    <!-- Dropdown til at vælge praktikperiode -->
     <div class="mb-3">
         <label>Vælg periode:</label>
         <select @onchange="OnPeriodChanged" class="form-select">
@@ -33,6 +39,7 @@ else
 
     @if (selectedPeriod != null)
     {
+        <!-- Liste over delmål i den valgte periode -->
         <h5>Delmål for Periode @selectedPeriod.PeriodeNummer</h5>
         <ul class="list-group">
             @foreach (var delmaal in selectedPeriod.Opgaver)
@@ -50,9 +57,13 @@ else
 }
 
 @code {
-    private Elevplan? plan;
-    private Praktikperiode? selectedPeriod;
+    private Elevplan? plan;                              // Hele elevens praktikplan
+    private Praktikperiode? selectedPeriod;              // Den valgte praktikperiode
 
+    /// <summary>
+    /// Henter elevens elevplan ud fra id, som er gemt i localStorage.
+    /// Viser automatisk første periode som valgt.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
@@ -63,6 +74,9 @@ else
         }
     }
 
+    /// <summary>
+    /// Skifter den viste periode ud fra brugerens valg i dropdown.
+    /// </summary>
     private void OnPeriodChanged(ChangeEventArgs e)
     {
         if (int.TryParse(e.Value?.ToString(), out var num))

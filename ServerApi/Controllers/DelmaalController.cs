@@ -13,12 +13,15 @@ namespace ServerApi.Controllers
     {
         private readonly IElevplan _repository;
 
+        // Dependency injection af elevplan repository
         public DelmaalController(IElevplan repository)
         {
             _repository = repository;
         }
 
-        // GET: api/elevplaner/{elevId}/perioder/{periodeNummer}/delmaal
+        /// <summary>
+        /// Henter listen af delmål for en bestemt elev og praktikperiode.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<List<Delmaal>>> GetListe(string elevId, int periodeNummer)
         {
@@ -26,7 +29,9 @@ namespace ServerApi.Controllers
             return Ok(liste);
         }
 
-        // GET: api/elevplaner/{elevId}/perioder/{periodeNummer}/delmaal/{delmaalId}
+        /// <summary>
+        /// Henter ét specifikt delmål baseret på elevId, periode og delmålId.
+        /// </summary>
         [HttpGet("{delmaalId}")]
         public async Task<ActionResult<Delmaal>> Get(string elevId, int periodeNummer, Guid delmaalId)
         {
@@ -38,7 +43,9 @@ namespace ServerApi.Controllers
             return Ok(delmaal);
         }
 
-        // POST: api/elevplaner/{elevId}/perioder/{periodeNummer}/delmaal
+        /// <summary>
+        /// Opretter et nyt delmål til en bestemt periode for en elev.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Delmaal>> Post(string elevId, int periodeNummer, [FromBody] Delmaal delmaal)
         {
@@ -46,7 +53,9 @@ namespace ServerApi.Controllers
             return CreatedAtAction(nameof(Get), new { elevId, periodeNummer, delmaalId = created.DelmaalId }, created);
         }
 
-        // PUT: api/elevplaner/{elevId}/perioder/{periodeNummer}/delmaal/{delmaalId}
+        /// <summary>
+        /// Opdaterer et eksisterende delmål for en elev i en given periode.
+        /// </summary>
         [HttpPut("{delmaalId}")]
         public async Task<IActionResult> Put(string elevId, int periodeNummer, Guid delmaalId, [FromBody] Delmaal updated)
         {
@@ -58,7 +67,9 @@ namespace ServerApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/elevplaner/{elevId}/perioder/{periodeNummer}/delmaal/{delmaalId}
+        /// <summary>
+        /// Sletter et delmål fra en elevs praktikplan.
+        /// </summary>
         [HttpDelete("{delmaalId}")]
         public async Task<IActionResult> Delete(string elevId, int periodeNummer, Guid delmaalId)
         {

@@ -1,28 +1,34 @@
-
-@page "/opretuser"
+@page "/opretuser"                             
+<!-- URL-sti til siden -->
 @using System.Text.Json.Serialization
 @using Core.Models
-@inject HttpClient Http
-@inject NavigationManager Nav
+@inject HttpClient Http                       
+<!-- HTTP-service til at sende data -->
+@inject NavigationManager Nav                 
+<!-- Bruges til at navigere til andre sider -->
 
 <div class="form-wrapper">
     <div class="form-container">
         <h3>Opret bruger</h3>
 
+        <!-- Formular til oprettelse af bruger -->
         <EditForm Model="newUser" OnValidSubmit="HandleRegister">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
+            <!-- Input: Email -->
             <div class="mb-3">
                 <label>Email</label>
                 <InputText @bind-Value="newUser.Email" class="form-control" />
             </div>
 
+            <!-- Input: Navn -->
             <div class="mb-3">
                 <label>Navn</label>
                 <InputText @bind-Value="newUser.Name" class="form-control" />
             </div>
 
+            <!-- Input: Rolle (vælges fra dropdown) -->
             <div class="mb-3">
                 <label>Rolle</label>
                 <InputSelect @bind-Value="newUser.Role" class="form-control">
@@ -32,12 +38,14 @@
                 </InputSelect>
             </div>
 
+            <!-- Knapper til at annullere eller oprette -->
             <div class="form-buttons">
                 <button type="button" class="btn btn-secondary" @onclick="Tilbage">Annullér</button>
                 <button type="submit" class="btn btn-primary">Opret bruger</button>
             </div>
         </EditForm>
 
+        <!-- Viser den automatisk genererede adgangskode -->
         @if (!string.IsNullOrEmpty(generatedPassword))
         {
             <div class="generated-password mt-4">
@@ -46,6 +54,7 @@
             </div>
         }
 
+        <!-- Viser elev ID hvis relevant -->
         @if (!string.IsNullOrEmpty(generatedElevId))
         {
             <div class="generated-elevid mt-3">
@@ -54,6 +63,7 @@
             </div>
         }
 
+        <!-- Viser besked ved succes eller fejl -->
         @if (!string.IsNullOrEmpty(message))
         {
             <p class="alert-info mt-3">@message</p>
@@ -62,23 +72,28 @@
 </div>
 
 @code {
-    private AppUser newUser = new();
-    private string? generatedPassword;
-    private string? generatedElevId;
-    private string? message;
+    private AppUser newUser = new();                 // Bruger der oprettes
+    private string? generatedPassword;              // Gemmer genereret adgangskode
+    private string? generatedElevId;                // Evt. elev-ID ved oprettelse
+    private string? message;                        // Fejl/succes-besked
 
+    // Model for API-respons
     private record RegisterResponse(
         string Message,
         string Password,
         string? ElevId);
 
+    /// <summary>
+    /// Håndterer oprettelsen af ny bruger og viser responsdata
+    /// </summary>
     private async Task HandleRegister()
     {
-        generatedPassword = GenerateRandomPassword();
+        generatedPassword = GenerateRandomPassword();           // Genererer adgangskode
         newUser.PasswordHash = generatedPassword;
         message = null;
         generatedElevId = null;
 
+        // Sender POST-request til backend med brugeroplysninger
         var response = await Http.PostAsJsonAsync("api/auth/register", newUser);
         if (response.IsSuccessStatusCode)
         {
@@ -89,8 +104,7 @@
                 generatedPassword = result.Password;
                 generatedElevId = result.ElevId;
             }
-            // Reset form model
-            newUser = new();
+            newUser = new();   // Nulstil formular
         }
         else
         {
@@ -100,8 +114,14 @@
         }
     }
 
+    /// <summary>
+    /// Navigerer brugeren tilbage til dashboardet
+    /// </summary>
     private void Tilbage() => Nav.NavigateTo("/dashboard");
 
+    /// <summary>
+    /// Genererer en tilfældig adgangskode uden forvirrende tegn (fx 0/O)
+    /// </summary>
     private string GenerateRandomPassword()
     {
         const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";

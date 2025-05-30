@@ -1,12 +1,17 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿<!-- Router-komponent håndterer navigation mellem sider -->
+<Router AppAssembly="@typeof(App).Assembly">
+    <!-- Hvis ruten findes, vises siden med valgt layout -->
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+        <!-- Hvis ruten findes, vises siden med valgt layout -->
     </Found>
+    <!-- Hvis ruten findes, vises siden med valgt layout -->
     <NotFound>
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
             <p role="alert">Sorry, there's nothing at this address.</p>
         </LayoutView>
+        <!-- Hvis ruten findes, vises siden med valgt layout -->
     </NotFound>
 </Router>

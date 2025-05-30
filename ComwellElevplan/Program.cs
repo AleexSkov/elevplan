@@ -7,6 +7,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+// Registrerer services til dependency injection
 builder.Services.AddScoped(sp =>
 {
     var baseUri = builder.HostEnvironment.IsDevelopment()

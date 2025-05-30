@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager Nav
-@inject IJSRuntime JS
+@inject NavigationManager Nav        
+@inject IJSRuntime JS            
 
 <div class="layout">
   <!-- Sidebar -->
@@ -9,13 +9,15 @@
       <div class="logo">
         <img src="https://img.icons8.com/ios-filled/24/000000/chef-hat.png" />
       </div>
-      <div class="user-display">@userName - @userRole</div>
+      <div class="user-display">@userName - @userRole</div> <!-- Viser navn og rolle fra localStorage -->
     </div>
+
+    <!-- Navigation baseret på brugerrolle -->
     <nav class="menu">
-      @* Check role case-insensitively *@
+      @* Viser specifik menu afhængigt af rolle (admin eller elev). Sammenligning er case-insensitive *@
       @if (userRole?.ToLowerInvariant() == "admin")
       {
-        
+        <!-- Admin-menu -->
         <a href="/DashboardAdmin"><img src="https://img.icons8.com/ios-filled/20/ffffff/list.png" />
           Admin Dashboard
         </a>
@@ -31,6 +33,7 @@
       }
       else
       {
+        <!-- Elev-menu -->
         <a href="/dashboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/home.png" />
           Dashboard
         </a>
@@ -54,6 +57,7 @@
         </a>
       }
 
+      <!-- Fælles bundmenu -->
       <div class="menu-footer">
         <a href="/opretuser"><img src="https://img.icons8.com/ios-filled/20/ffffff/add-administrator.png" />
           Opret Bruger (Admin)
@@ -69,28 +73,34 @@
     </nav>
   </aside>
 
-  <!-- Main content -->
+  <!-- Hovedindhold -->
   <main class="main">
     <header class="topbar">
-      <h2></h2>
+      <h2></h2> <!-- Tom overskrift – kan tilpasses pr. side -->
     </header>
 
     <section class="content">
-      @Body
+      @Body <!-- Viser det aktuelle sideindhold -->
     </section>
   </main>
 </div>
 
 @code {
-  private string? userName;
-  private string? userRole;
+  private string? userName; // Brugernavn hentes fra localStorage
+  private string? userRole; // Rolle (Admin, Elev) hentes fra localStorage
 
+  /// <summary>
+  /// Ved initialisering hentes brugerdata fra localStorage via JS interop
+  /// </summary>
   protected override async Task OnInitializedAsync()
   {
     userName = await JS.InvokeAsync<string>("localStorage.getItem", "userName");
     userRole = await JS.InvokeAsync<string>("localStorage.getItem", "userRole");
   }
 
+  /// <summary>
+  /// Logger brugeren ud ved at rydde localStorage og sende brugeren til forsiden
+  /// </summary>
   private async Task Logout()
   {
     await JS.InvokeVoidAsync("localStorage.clear");

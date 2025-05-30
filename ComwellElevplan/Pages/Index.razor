@@ -1,12 +1,16 @@
-@page "/"
-@layout PublicLayout
+@page "/"                        
+<!-- Forsidens URL -->
+@layout PublicLayout            
+<!-- Bruger simpelt layout uden sidebar -->
 @using ComwellElevplan.Components
-@inject NavigationManager Nav
+@inject NavigationManager Nav  
+<!-- Kan bruges til navigation -->
 
 <div class="homepage">
-    <!-- Hero section -->
+
+    <!-- Hero section: Velkomstområde med branding og formål -->
     <section class="hero">
-        <div class="hero-overlay"></div>
+        <div class="hero-overlay"></div> <!-- Mørk gennemsigtig baggrund -->
         <div class="hero-content">
             <div class="brand">
                 <span>Comwell</span>
@@ -18,12 +22,12 @@
         </div>
     </section>
 
-    <!-- Login & Image section -->
+    <!-- Login & billede: venstre = login, højre = billede -->
     <section class="login-section">
         <div class="login-container">
             <div class="login-box fade-in">
                 <h2>Log ind på din konto</h2>
-                <LoginForm />
+                <LoginForm /> <!-- Komponent der håndterer selve login-processen -->
             </div>
             <div class="login-image">
                 <img src="https://media.comwell.com/cdn/xZdq01/skaldyrsaften-borupgaard-01098.jpeg?d=15376"
@@ -32,7 +36,7 @@
         </div>
     </section>
 
-    <!-- Features section -->
+    <!-- Features: Forklaring på funktioner i platformen -->
     <section class="features">
         <div class="feature-card">
             <h3>📋 Din Elevplan</h3>
@@ -50,5 +54,5 @@
 </div>
 
 @code {
-    // Intet her mere – login håndteres i LoginForm
+    // Intet logik i denne komponent – LoginForm håndterer login.
 }

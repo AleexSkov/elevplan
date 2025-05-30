@@ -12,15 +12,22 @@ namespace ServerApi.Controllers
     {
         private readonly IElevplan _elevplanService;
 
+        // Dependency injection af service/repository
         public ElevplanController(IElevplan elevplanService)
             => _elevplanService = elevplanService;
 
-        // GET api/elevplaner
+        /// <summary>
+        /// Returnerer alle elevplaner i systemet.
+        /// Bruges typisk til admin-visning eller eksport.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<List<Elevplan>>> GetAll()
             => Ok(await _elevplanService.GetAllAsync());
 
-        // GET api/elevplaner/{elevId}
+        /// <summary>
+        /// Henter en specifik elevplan baseret på elevens ID.
+        /// Returnerer 404 hvis ikke fundet.
+        /// </summary>
         [HttpGet("{elevId}")]
         public async Task<ActionResult<Elevplan?>> GetByElevId(string elevId)
         {
@@ -28,7 +35,10 @@ namespace ServerApi.Controllers
             return plan == null ? NotFound() : Ok(plan);
         }
 
-        // NYT: GET api/elevplaner/{elevId}/export
+        /// <summary>
+        /// Eksporterer hele elevplanen som JSON til fx download eller kopi.
+        /// Samme som GetByElevId men med en anden rute.
+        /// </summary>
         [HttpGet("{elevId}/export")]
         public async Task<IActionResult> ExportByElevId(string elevId)
         {
@@ -36,11 +46,13 @@ namespace ServerApi.Controllers
             if (plan == null)
                 return NotFound();
 
-            // Returner hele planen som JSON
-            return Ok(plan);
+            return Ok(plan); // Returner hele planen i JSON-format
         }
 
-        // POST api/elevplaner/{elevId}/opgave
+        /// <summary>
+        /// Opdaterer ét delmål (opgave) i en given praktikperiode for en elev.
+        /// Basiskald for check/uncheck i UI.
+        /// </summary>
         [HttpPost("{elevId}/opgave")]
         public async Task<IActionResult> UpdateOpgave(
             string elevId,
@@ -55,6 +67,9 @@ namespace ServerApi.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Request-body til UpdateOpgave – bruges til at identificere og opdatere ét delmål.
+        /// </summary>
         public class UpdateOpgaveRequest
         {
             public int    PeriodeNummer { get; set; }
