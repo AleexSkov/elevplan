@@ -7,9 +7,11 @@
 <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header d-flex align-items-center">
         <h5 class="modal-title">@Title</h5>
-        <button type="button" class="close" @onclick="Close"><span>&times;</span></button>
+        <button type="button" class="custom-close ms-auto" @onclick="Close" title="Luk">
+          &times;
+        </button>
       </div>
       <div class="modal-body">
         @if (Elevplan is null)
@@ -89,7 +91,6 @@
     </div>
   </div>
 </div>
-
 @code {
   [Parameter] public string ElevId { get; set; } = default!;
   [Parameter] public bool IsAdmin { get; set; }

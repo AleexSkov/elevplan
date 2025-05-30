@@ -15,8 +15,9 @@
 
 <h3>Admin Dashboard</h3>
 
-<div class="mb-3 d-flex align-items-center">
+<div class="mb-3 d-flex align-items-center gap-2">
     <input class="form-control me-2" placeholder="Søg efter navn..." @bind="searchTerm" />
+    <button class="btn btn-success" @onclick="ExportSummaryCsv">Eksporter oversigt CSV</button>
     <button class="btn btn-outline-secondary me-2" @onclick="ToggleSort">
         @if (!sortByCompleted)
         {
@@ -27,15 +28,14 @@
             <span>Sorter efter: Navn (A-Z)</span>
         }
     </button>
-    <button class="btn btn-success" @onclick="ExportSummaryCsv">Eksporter oversigt CSV</button>
-    <span class="text-muted ms-2">(Tryk for at skifte sortering eller eksportér)</span>
+    <span class="text-muted ms-1">(Tryk for at skifte sortering eller eksportér)</span>
 </div>
 
 <table class="table">
     <thead>
         <tr>
-            <th>ElevId</th>
             <th>Navn</th>
+            <th>ElevId</th>
             <th>Gennemført</th>
             <th>Handling</th>
         </tr>
@@ -44,8 +44,8 @@
     @foreach (var elev in DisplayedElever)
     {
         <tr>
-            <td>@elev.ElevId</td>
             <td>@elev.ElevNavn</td>
+            <td>@elev.ElevId</td>
             <td>@TotalCompleted(elev)</td>
             <td>
                 <button class="btn btn-sm btn-primary" @onclick="() => OpenModal(elev.ElevId)">Se plan</button>

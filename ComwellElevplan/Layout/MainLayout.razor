@@ -16,17 +16,17 @@
       @if (userRole?.ToLowerInvariant() == "admin")
       {
         
-        <a href="/DashboardAdmin"><img src="https://img.icons8.com/ios-filled/20/ffffff/administrator.png" />
+        <a href="/DashboardAdmin"><img src="https://img.icons8.com/ios-filled/20/ffffff/list.png" />
           Admin Dashboard
         </a>
         <a href="/admin/elevplan"><img src="https://img.icons8.com/ios-filled/20/ffffff/task.png" />
           Alle Elevplaner
         </a>
         <a href="/forum"><img src="https://img.icons8.com/ios-filled/20/ffffff/topic.png" />
-          Forum
+          Forum (Mock)
         </a>
         <a href="/profil"><img src="https://img.icons8.com/ios-filled/20/ffffff/user.png" />
-          Profil
+          Profil (Mock)
         </a>
       }
       else
@@ -38,28 +38,28 @@
           Elevplan
         </a>
         <a href="/quiz"><img src="https://img.icons8.com/ios-filled/20/ffffff/book.png" />
-          Quiz
+          Quiz (Mock)
         </a>
         <a href="/leaderboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/trophy.png" />
-          Leaderboard
+          Leaderboard (Mock)
         </a>
         <a href="/forum"><img src="https://img.icons8.com/ios-filled/20/ffffff/topic.png" />
-          Forum
+          Forum (Mock)
         </a>
-        <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/upload.png" />
-          Dele opgaver
+        <a href="deleopgaver"><img src="https://img.icons8.com/ios-filled/20/ffffff/upload.png" />
+          Dele opgaver (Mock)
         </a>
         <a href="/profil"><img src="https://img.icons8.com/ios-filled/20/ffffff/user.png" />
-          Profil
+          Profil (Mock)
         </a>
       }
 
       <div class="menu-footer">
         <a href="/opretuser"><img src="https://img.icons8.com/ios-filled/20/ffffff/add-administrator.png" />
-          (HR) Opret Bruger
+          Opret Bruger (Admin)
         </a>
-        <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/settings.png"/>
-          Indstillinger
+        <a href="settings"><img src="https://img.icons8.com/ios-filled/20/ffffff/settings.png"/>
+          Indstillinger (Mock)
         </a>
         <a @onclick="Logout" class="logout-link">
           <img src="https://img.icons8.com/ios-filled/20/ffffff/exit.png"/>
@@ -73,13 +73,6 @@
   <main class="main">
     <header class="topbar">
       <h2></h2>
-      <div class="actions">
-        <div class="notifications">
-          <img src="https://img.icons8.com/ios-filled/20/ffffff/bell.png" />
-          <span class="badge">3</span>
-        </div>
-        <button class="new-button">Opret nyt</button>
-      </div>
     </header>
 
     <section class="content">
