@@ -1,10 +1,12 @@
-/* PublicLayout.razor.css */
+/* ───────────────────────────────────────────── */
+/* PublicLayout – Styling af sider uden login   */
+/* ───────────────────────────────────────────── */
 
 .public-container {
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;    /* fylder hele viewport-højden */
-    margin: 0;
-    padding: 0;
-    background: #fafafa;  /* eller anden baggrundsfarve */
+    flex-direction: column; /* Indhold stables vertikalt */
+    min-height: 100vh;      /* Fylder hele skærmens højde */
+    margin: 0;              /* Fjerner default margin */
+    padding: 0;             /* Fjerner default padding */
+    background: #fafafa;    /* Lys baggrund for offentlige sider */
 }

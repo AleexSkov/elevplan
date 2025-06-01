@@ -1,29 +1,39 @@
+/* ─────────────────────────────────────────────── */
+/* Login-boksen – centrering og stil               */
+/* ─────────────────────────────────────────────── */
 .login-box {
     background: white;
-    max-width: 410px;
-    margin: 5rem auto 0 auto;
-    padding: 2.5rem 2rem;
-    border-radius: 1.2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.11);
-    border: 1px solid #ece8e0;
-    animation: fadeIn 1s ease;
-    opacity: 0;
+    max-width: 410px;                      /* Boksens bredde */
+    margin: 5rem auto 0 auto;              /* Centreret på siden */
+    padding: 2.5rem 2rem;                  /* Indvendig luft */
+    border-radius: 1.2rem;                 /* Afrundede hjørner */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.11);  /* Let skygge */
+    border: 1px solid #ece8e0;             /* Lys ramme */
+    animation: fadeIn 1s ease;             /* Fade-in ved indlæsning */
+    opacity: 0;                            /* Udgangspunkt for animation */
     display: flex;
     flex-direction: column;
 }
 
+/* FadeIn animation */
 @keyframes fadeIn {
     to { opacity: 1; }
 }
 
+/* ───────────── */
+/* Overskrift    */
+/* ───────────── */
 .login-box h2 {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 2rem;
-    color: #182b39;
+    color: #182b39;                        /* Mørk blå */
     text-align: center;
 }
 
+/* ───────────── */
+/* Input-grupper */
+/* ───────────── */
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -35,6 +45,9 @@
     color: #222;
 }
 
+/* ─────────────────────────────────────────────── */
+/* Inputfelter – inkl. styling for bedre UX        */
+/* ─────────────────────────────────────────────── */
 .form-control, .form-group input {
     width: 100%;
     padding: 0.65rem 1rem;
@@ -47,10 +60,13 @@
 
 .form-control:focus {
     outline: none;
-    border-color: #aa8d65;
+    border-color: #aa8d65;                 /* Highlight farve */
     box-shadow: 0 0 0 2px #f3e9da;
 }
 
+/* ─────────────────────────────────────────────── */
+/* Submit-knap                                     */
+/* ─────────────────────────────────────────────── */
 button[type="submit"] {
     width: 100%;
     background: linear-gradient(90deg, #182b39 0%, #aa8d65 100%);
@@ -69,9 +85,12 @@ button[type="submit"]:hover {
     background: linear-gradient(90deg, #aa8d65 0%, #182b39 100%);
 }
 
+/* ─────────────────────────────────────────────── */
+/* Valideringsfejl                                 */
+/* ─────────────────────────────────────────────── */
 .validation-message,
 .validation-summary ul {
-    color: #d23b3b;
+    color: #d23b3b;                         /* Rød farve ved fejl */
     font-size: 0.93rem;
     margin-top: 0.3rem;
     margin-bottom: 0.4rem;
@@ -79,6 +98,9 @@ button[type="submit"]:hover {
     padding-left: 0;
 }
 
+/* ─────────────────────────────────────────────── */
+/* Responsiv til mobilvisning                      */
+/* ─────────────────────────────────────────────── */
 @media (max-width: 600px) {
     .login-box {
         padding: 1.2rem 0.4rem;

@@ -1,22 +1,32 @@
-@page "/DashboardAdmin"
-@layout MainLayout
+@page "/DashboardAdmin"             
+<!-- URL-rute for admin-dashboardet -->
+@layout MainLayout                 
+<!-- Bruger MainLayout med sidebar og topbar -->
 
+<!-- Imports -->
 @using System
 @using System.Linq
 @using System.Collections.Generic
-@using Core.Models
-@using ComwellElevplan.Components
+@using Core.Models                  
+<!-- Indeholder Elevplan, Opgaver mm. -->
+@using ComwellElevplan.Components  
+<!-- Importerer f.eks. ElevplanModal -->
 @using System.Net.Http.Json
 @using Microsoft.AspNetCore.Components
 @using Microsoft.JSInterop
 
-@inject HttpClient Http
-@inject IJSRuntime JS
+@inject HttpClient Http           
+ <!-- Bruges til API-kald -->
+@inject IJSRuntime JS              
+<!-- Bruges til fil-download via JavaScript -->
 
+<!-- Sideoverskrift -->
 <h3>Admin Dashboard</h3>
 
-<div class="mb-3 d-flex align-items-center">
+<!-- Søgefelt, eksport-knap og sorteringskontrol -->
+<div class="mb-3 d-flex align-items-center gap-2">
     <input class="form-control me-2" placeholder="Søg efter navn..." @bind="searchTerm" />
+    <button class="btn btn-success" @onclick="ExportSummaryCsv">Eksporter oversigt CSV</button>
     <button class="btn btn-outline-secondary me-2" @onclick="ToggleSort">
         @if (!sortByCompleted)
         {
@@ -27,27 +37,28 @@
             <span>Sorter efter: Navn (A-Z)</span>
         }
     </button>
-    <button class="btn btn-success" @onclick="ExportSummaryCsv">Eksporter oversigt CSV</button>
-    <span class="text-muted ms-2">(Tryk for at skifte sortering eller eksportér)</span>
+    <span class="text-muted ms-1">(Tryk for at skifte sortering eller eksportér)</span>
 </div>
 
+<!-- Oversigtstabel over elever -->
 <table class="table">
     <thead>
-        <tr>
-            <th>ElevId</th>
-            <th>Navn</th>
-            <th>Gennemført</th>
-            <th>Handling</th>
-        </tr>
+    <tr>
+        <th>Navn</th>
+        <th>ElevId</th>
+        <th>Gennemført</th>
+        <th>Handling</th>
+    </tr>
     </thead>
     <tbody>
     @foreach (var elev in DisplayedElever)
     {
         <tr>
-            <td>@elev.ElevId</td>
             <td>@elev.ElevNavn</td>
+            <td>@elev.ElevId</td>
             <td>@TotalCompleted(elev)</td>
             <td>
+                <!-- Åbner modal med elevplan -->
                 <button class="btn btn-sm btn-primary" @onclick="() => OpenModal(elev.ElevId)">Se plan</button>
             </td>
         </tr>
@@ -55,35 +66,58 @@
     </tbody>
 </table>
 
+<!-- Modalvisning af elevplan -->
 @if (showModal)
 {
     <ElevplanModal ElevId="@selectedId" IsAdmin="true" OnClose="() => showModal = false" />
 }
 
 @code {
+    // Liste over alle elevplaner
     private List<Elevplan> elever = new();
+
+    // Søgeord brugt til filtrering
     private string searchTerm = string.Empty;
+
+    // Sorteringsflag – hvis true, sorter efter antal gennemførte
     private bool sortByCompleted = false;
+
+    // Bruges til at styre visning af modal
     private bool showModal = false;
     private string selectedId = string.Empty;
 
+    /// <summary>
+    /// Filtrerer og sorterer elevplaner ud fra søgning og sortering.
+    /// </summary>
     private IEnumerable<Elevplan> DisplayedElever =>
         (elever ?? new List<Elevplan>())
         .Where(e => string.IsNullOrWhiteSpace(searchTerm)
-            || e.ElevNavn.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    || e.ElevNavn.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
         .OrderByDescending(e => sortByCompleted ? TotalCompleted(e) : 0)
         .ThenBy(e => sortByCompleted ? string.Empty : e.ElevNavn);
 
+    /// <summary>
+    /// Henter alle elevplaner fra API ved første indlæsning.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         elever = await Http.GetFromJsonAsync<List<Elevplan>>("/api/elevplaner");
     }
 
+    /// <summary>
+    /// Beregner hvor mange delmål der er gennemført for en elev.
+    /// </summary>
     private int TotalCompleted(Elevplan e) =>
         e.Praktikperioder?.SelectMany(p => p.Opgaver).Count(d => d.Gennemført) ?? 0;
 
+    /// <summary>
+    /// Skifter mellem sortering efter navn eller gennemførte opgaver.
+    /// </summary>
     private void ToggleSort() => sortByCompleted = !sortByCompleted;
 
+    /// <summary>
+    /// Åbner modalvindue for valgt elevplan.
+    /// </summary>
     private Task OpenModal(string id)
     {
         selectedId = id;
@@ -91,6 +125,9 @@
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Eksporterer en CSV-oversigt over alle viste elever og deres statistik.
+    /// </summary>
     private async Task ExportSummaryCsv()
     {
         var sb = new System.Text.StringBuilder();

@@ -63,6 +63,7 @@
 
 /* Selve listen (giver max-højde og scrollbar) */
 .fancy-list {
+
     list-style: none;
     margin: 0;
     padding: 0;
@@ -147,6 +148,7 @@
     /* Panel-headerer justeres til kolonnelayout */
     .panel-header,
     .simple-header {
+
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;

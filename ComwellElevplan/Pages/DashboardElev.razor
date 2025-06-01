@@ -1,14 +1,15 @@
-@page "/dashboard"
-@layout MainLayout
-
-@using Core.Models
-@using System.Net.Http.Json
-@inject HttpClient Http
-@inject IJSRuntime JS
+@page "/dashboard"               
+<!-- Side-rute for elevens dashboard -->
+@layout MainLayout               
+<!-- Bruger layout med sidebar/topbar -->
+@inject HttpClient Http         
+<!-- Bruges til at hente data fra API -->
+@inject IJSRuntime JS           
+<!-- Bruges til at hente elevId fra localStorage -->
 
 <div class="dashboard">
 
-    <!-- Greeting (bevarer gul farve) -->
+    <!-- Velkomsttekst -->
     <div class="greeting mb-4">
         <h3>Velkommen tilbage!</h3>
         @if (plan != null)
@@ -19,7 +20,7 @@
 
     @if (plan is null)
     {
-        <p>Indlæser data…</p>
+        <p>Indlæser data…</p> <!-- Vis loader, hvis data ikke er hentet endnu -->
     }
     else
     {
@@ -34,7 +35,7 @@
             </div>
         </div>
 
-        <!-- Stats -->
+        <!-- Statistik: gennemførte og manglende mål -->
         <div class="stats row mb-4">
             <div class="col-sm-6 col-lg-3">
                 <div class="stat-item p-3 border rounded">
@@ -50,10 +51,10 @@
             </div>
         </div>
 
-        <!-- Panels -->
+        <!-- Indhold opdelt i to paneler -->
         <div class="dashboard-grid row g-4">
 
-            <!-- Mangler i perioden -->
+            <!-- Panel: Manglende delmål -->
             <div class="panel col-md-6">
                 <!-- Header bruger samme gule/olivengrønne farve som .greeting -->
                 <div class="panel-header">
@@ -79,7 +80,7 @@
                 }
             </div>
 
-            <!-- Leaderboard (let styling) -->
+            <!-- Panel: Leaderboard -->
             <div class="panel col-md-6">
                 <div class="panel-header simple-header">
                     <h4>Top 3 elever</h4>
@@ -100,13 +101,17 @@
 </div>
 
 @code {
-    private Elevplan? plan;
-    private int CompletedCount { get; set; }
-    private List<Delmaal> MissingDelmaal { get; set; } = new();
-    private int TotalDelmaal { get; set; }
-    private int ProgressPercent { get; set; }
-    private List<LeaderboardEntry> Leaderboard { get; set; } = new();
+    private Elevplan? plan;                           // Brugerens elevplan
+    private int CompletedCount { get; set; }          // Antal gennemførte delmål
+    private List<Delmaal> MissingDelmaal { get; set; } = new(); // Ikke-gennemførte mål
+    private int TotalDelmaal { get; set; }            // Totalt antal delmål
+    private int ProgressPercent { get; set; }         // Progress i procent
+    private List<LeaderboardEntry> Leaderboard { get; set; } = new(); // Mock-top 3
 
+    /// <summary>
+    /// Ved sideindlæsning hentes elevId fra localStorage og elevplan fra API.
+    /// Der beregnes gennemført status, mangler og progression.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
@@ -121,7 +126,7 @@
                 MissingDelmaal = alle.Where(d => !d.Gennemført).ToList();
                 ProgressPercent = TotalDelmaal > 0 ? (int)(CompletedCount * 100.0 / TotalDelmaal) : 0;
 
-                // Mock leaderboard
+                // Mock leaderboard (ikke baseret på backend)
                 Leaderboard = new List<LeaderboardEntry>
                 {
                     new() { Rank = 1, Name = "Alice", Score = 1500 },
@@ -132,6 +137,9 @@
         }
     }
 
+    /// <summary>
+    /// Lokal klasse til at repræsentere leaderboard-indgange.
+    /// </summary>
     private class LeaderboardEntry
     {
         public int Rank  { get; set; }

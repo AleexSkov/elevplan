@@ -1,26 +1,42 @@
 // ElevplanAdmin.razor
-@page "/admin/elevplan/{elevId}"
-@layout MainLayout
+@page "/admin/elevplan/{elevId}"        
+<!-- URL med parameter: viser en specifik elevplan -->
+@layout MainLayout                      
+<!-- Bruger MainLayout med navigation og topbar -->
 
-@using Core.Models
+@using Core.Models                      
+<!-- Indeholder modelklasser som Elevplan -->
 @using System.Net.Http.Json
-@inject HttpClient Http
+@inject HttpClient Http                
+<!-- HTTP-klient til at hente elevplanen -->
 
+<!-- Overskrift med navn på eleven -->
 <h3>Elevplan for @elevplan?.ElevNavn</h3>
 
 @if (elevplan is null)
 {
-    <p>Indlæser...</p>
+    <p>Indlæser...</p> <!-- Vis besked mens data hentes -->
 }
 else
 {
     <!-- Genbrug markup fra MinElevplan, men uden rollebegrænsninger -->
+    <!-- Her ville du typisk placere en komponent eller kodeblok der visualiserer elevplanens praktikperioder -->
 }
 
 @code {
+    /// <summary>
+    /// Id på den elevplan der skal vises. Kommer fra URL'en.
+    /// </summary>
     [Parameter] public string elevId { get; set; } = default!;
+
+    /// <summary>
+    /// Den elevplan der bliver hentet og vist.
+    /// </summary>
     private Elevplan? elevplan;
 
+    /// <summary>
+    /// Ved initialisering hentes elevplanen via API baseret på elevId.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         elevplan = await Http.GetFromJsonAsync<Elevplan>(

@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager Nav
-@inject IJSRuntime JS
+@inject NavigationManager Nav        
+@inject IJSRuntime JS            
 
 <div class="layout">
   <!-- Sidebar -->
@@ -9,28 +9,34 @@
       <div class="logo">
         <img src="https://img.icons8.com/ios-filled/24/000000/chef-hat.png" />
       </div>
-      <div class="user-display">@userName - @userRole</div>
+      <div class="user-display">@userName - @userRole</div> <!-- Viser navn og rolle fra localStorage -->
     </div>
+
+    <!-- Navigation baseret på brugerrolle -->
     <nav class="menu">
-      @* Check role case-insensitively *@
+      @* Viser specifik menu afhængigt af rolle (admin eller elev). Sammenligning er case-insensitive *@
       @if (userRole?.ToLowerInvariant() == "admin")
       {
-        
-        <a href="/DashboardAdmin"><img src="https://img.icons8.com/ios-filled/20/ffffff/administrator.png" />
+        <!-- Admin-menu -->
+        <a href="/DashboardAdmin"><img src="https://img.icons8.com/ios-filled/20/ffffff/list.png" />
           Admin Dashboard
         </a>
         <a href="/admin/elevplan"><img src="https://img.icons8.com/ios-filled/20/ffffff/task.png" />
           Alle Elevplaner
         </a>
         <a href="/forum"><img src="https://img.icons8.com/ios-filled/20/ffffff/topic.png" />
-          Forum
+          Forum (Mock)
         </a>
         <a href="/profil"><img src="https://img.icons8.com/ios-filled/20/ffffff/user.png" />
-          Profil
+          Profil (Mock)
+        </a>
+        <a href="/opretuser"><img src="https://img.icons8.com/ios-filled/20/ffffff/add-administrator.png" />
+          Opret Bruger (Admin)
         </a>
       }
       else
       {
+        <!-- Elev-menu -->
         <a href="/dashboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/home.png" />
           Dashboard
         </a>
@@ -38,28 +44,26 @@
           Elevplan
         </a>
         <a href="/quiz"><img src="https://img.icons8.com/ios-filled/20/ffffff/book.png" />
-          Quiz
+          Quiz (Mock)
         </a>
         <a href="/leaderboard"><img src="https://img.icons8.com/ios-filled/20/ffffff/trophy.png" />
-          Leaderboard
+          Leaderboard (Mock)
         </a>
         <a href="/forum"><img src="https://img.icons8.com/ios-filled/20/ffffff/topic.png" />
-          Forum
+          Forum (Mock)
         </a>
-        <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/upload.png" />
-          Dele opgaver
+        <a href="deleopgaver"><img src="https://img.icons8.com/ios-filled/20/ffffff/upload.png" />
+          Dele opgaver (Mock)
         </a>
         <a href="/profil"><img src="https://img.icons8.com/ios-filled/20/ffffff/user.png" />
-          Profil
+          Profil (Mock)
         </a>
       }
 
+      <!-- Fælles bundmenu -->
       <div class="menu-footer">
-        <a href="/opretuser"><img src="https://img.icons8.com/ios-filled/20/ffffff/add-administrator.png" />
-          (HR) Opret Bruger
-        </a>
-        <a href="#"><img src="https://img.icons8.com/ios-filled/20/ffffff/settings.png"/>
-          Indstillinger
+        <a href="settings"><img src="https://img.icons8.com/ios-filled/20/ffffff/settings.png"/>
+          Indstillinger (Mock)
         </a>
         <a @onclick="Logout" class="logout-link">
           <img src="https://img.icons8.com/ios-filled/20/ffffff/exit.png"/>
@@ -69,35 +73,34 @@
     </nav>
   </aside>
 
-  <!-- Main content -->
+  <!-- Hovedindhold -->
   <main class="main">
     <header class="topbar">
-      <h2></h2>
-      <div class="actions">
-        <div class="notifications">
-          <img src="https://img.icons8.com/ios-filled/20/ffffff/bell.png" />
-          <span class="badge">3</span>
-        </div>
-        <button class="new-button">Opret nyt</button>
-      </div>
+      <h2></h2> <!-- Tom overskrift – kan tilpasses pr. side -->
     </header>
 
     <section class="content">
-      @Body
+      @Body <!-- Viser det aktuelle sideindhold -->
     </section>
   </main>
 </div>
 
 @code {
-  private string? userName;
-  private string? userRole;
+  private string? userName; // Brugernavn hentes fra localStorage
+  private string? userRole; // Rolle (Admin, Elev) hentes fra localStorage
 
+  /// <summary>
+  /// Ved initialisering hentes brugerdata fra localStorage via JS interop
+  /// </summary>
   protected override async Task OnInitializedAsync()
   {
     userName = await JS.InvokeAsync<string>("localStorage.getItem", "userName");
     userRole = await JS.InvokeAsync<string>("localStorage.getItem", "userRole");
   }
 
+  /// <summary>
+  /// Logger brugeren ud ved at rydde localStorage og sende brugeren til forsiden
+  /// </summary>
   private async Task Logout()
   {
     await JS.InvokeVoidAsync("localStorage.clear");

@@ -1,13 +1,15 @@
+/* Stil for login-boksen */
 .login-box {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid #f3f4f6;
-    animation: fadeIn 1.2s ease-out forwards;
-    opacity: 0;
+    background: white; /* Hvid baggrund */
+    padding: 2.5rem; /* Indvendig afstand */
+    border-radius: 1rem; /* Afrundede hjørner */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Let skyggeeffekt */
+    border: 1px solid #f3f4f6; /* Lys kant */
+    animation: fadeIn 1.2s ease-out forwards; /* Indfade-animation */
+    opacity: 0; /* Starter som usynlig før animation */
 }
 
+/* Overskrift inde i login-boks */
 .login-box h2 {
     text-align: center;
     font-size: 1.5rem;
@@ -15,16 +17,19 @@
     margin-bottom: 1.5rem;
 }
 
+/* Wrapper til hvert inputfelt + label */
 .form-group {
     margin-bottom: 1.25rem;
 }
 
+/* Label-tekst over inputfelter */
 .form-group label {
     display: block;
     font-size: 0.875rem;
     margin-bottom: 0.25rem;
 }
 
+/* Inputfelter */
 .form-control {
     width: 100%;
     padding: 0.5rem 1rem;
@@ -33,15 +38,17 @@
     transition: box-shadow 0.2s;
 }
 
+/* Når inputfeltet er i fokus */
 .form-control:focus {
     box-shadow: 0 0 0 2px #aa8d65;
     border-color: #aa8d65;
     outline: none;
 }
 
+/* Indsend-knap */
 button[type="submit"] {
     width: 100%;
-    background-color: rgb(24, 43, 57);
+    background-color: rgb(24, 43, 57); /* Mørk gråblå */
     color: white;
     font-weight: 600;
     padding: 0.75rem;
@@ -51,26 +58,31 @@ button[type="submit"] {
     transition: background 0.2s;
 }
 
+/* Hover-effekt på knap */
 button[type="submit"]:hover {
-    background-color: #aa8d65;
+    background-color: #aa8d65; /* Lys brunlig farve */
 }
 
+/* Links under login-form */
 .login-links {
     margin-top: 1rem;
     text-align: center;
     font-size: 0.875rem;
 }
 
+/* Stil for links */
 .login-links a {
-    color: rgb(24, 43, 57);
+    color: rgb(24, 43, 57); /* Samme gråblå som knappen */
     text-decoration: none;
     margin: 0 0.5rem;
 }
 
+/* Hover-effekt på links */
 .login-links a:hover {
     color: #aa8d65;
 }
 
+/* Fade-in animation (bruges af .login-box) */
 @keyframes fadeIn {
     to {
         opacity: 1;
