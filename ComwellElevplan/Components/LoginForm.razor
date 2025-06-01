@@ -69,22 +69,19 @@
         if (result.MustChangePassword)
         {
             Nav.NavigateTo("/changepassword");
-        }
-        
-        else
-        {
-            Nav.NavigateTo("/dashboard");
+            return;
         }
 
-        if (result.Role == "Admin") ;
+        if (result.Role == "Admin") 
         {
             Nav.NavigateTo("/DashboardAdmin");
         }
 
-        if (result.Role == "Elev") ;
+        else if (result.Role == "Elev") 
         {
             Nav.NavigateTo("/Dashboard");
         }
+       
     }
 
     }
