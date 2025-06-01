@@ -1,11 +1,258 @@
-.custom-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #000;
-    cursor: pointer;
-    transition: color 0.2s ease;
+/* -----------------------------------------------------------
+   ElevplanModal.razor.css (opdateret med themes og farver)
+   ----------------------------------------------------------- */
+
+/* -----------------------------------------------------------
+   0) Tema-variabler
+   ----------------------------------------------------------- */
+:root {
+    --color-navy: #182b39;
+    --color-gold: #aa8d65;
+    --color-gold-dark: #8b7a52;
+    --color-text: #182b39;
+    --color-text-light: #6c757d;
+    --color-surface: #ffffff;
+    --color-background: #fdfdfd;
+    --color-border: #e0e0e0;
+    --shadow-light: 0 2px 6px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --border-radius: 0.5rem;
+    --transition-fast: 0.15s ease-in-out;
 }
-.custom-close:hover {
-    color: #dc3545;
+
+/* -----------------------------------------------------------
+   1) Selve <details>-elementet (hver Periode‐blok)
+   ----------------------------------------------------------- */
+:host ::deep .periode-details {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: box-shadow var(--transition-fast);
+}
+
+:host ::deep .periode-details:hover {
+    box-shadow: var(--shadow-medium);
+}
+
+/* -----------------------------------------------------------
+   2) <summary> = Periode-overskriften
+   ----------------------------------------------------------- */
+:host ::deep .periode-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-navy);
+    color: var(--color-surface);
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    list-style: none; /* fjerner trekant i Firefox */
+    border-left: 4px solid var(--color-gold);
+    transition: background-color var(--transition-fast);
+}
+
+:host ::deep .periode-summary:hover {
+    background-color: #0f1a23; /* lidt mørkere navy ved hover */
+}
+
+/* 2.1) Fjern standard marker/trekant i browsere */
+:host ::deep .periode-summary::-webkit-details-marker {
+    display: none;
+}
+:host ::deep .periode-summary::marker {
+    content: "";
+}
+
+/* -----------------------------------------------------------
+   3) Pil‐ikonet (chevron) roterer
+   ----------------------------------------------------------- */
+:host ::deep .periode-summary .chevron {
+    border-style: solid;
+    border-width: 0.2em 0.2em 0 0;
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    transform: rotate(45deg);
+    transition: transform var(--transition-fast);
+    color: var(--color-gold);
+    margin-left: 0.5rem;
+}
+
+/* 3.1) Når <details> er åbent, roteres pilen nedad */
+:host ::deep .periode-details[open] .chevron {
+    transform: rotate(135deg);
+}
+
+/* -----------------------------------------------------------
+   4) Indholdet (ul.list-group + tilføj-formular)
+   ----------------------------------------------------------- */
+:host ::deep .periode-details > ul,
+:host ::deep .periode-details > .mt-3 {
+    padding: 0 1rem 1rem 1rem;
+    margin: 0;
+    background-color: var(--color-surface);
+}
+
+/* 4.1) Liste over delmål */
+:host ::deep .periode-details > ul.list-group {
+    margin-top: 0.5rem;
+    border: none;
+}
+
+/* 4.2) Hver delmåls-item */
+:host ::deep .periode-details > ul.list-group > li.list-group-item {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.4rem;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+:host ::deep .periode-details > ul.list-group > li.list-group-item:hover {
+    background-color: #fbfbfb; /* let lys baggrund ved hover */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* 4.3) Checkbox-styling */
+:host ::deep .periode-details > ul.list-group > li.list-group-item .form-check-input {
+    accent-color: var(--color-gold);
+    margin-right: 0.75rem;
+}
+
+/* 4.4) Delmålstekst */
+:host ::deep .periode-details > ul.list-group > li.list-group-item .flex-grow-1 {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    line-height: 1.3;
+}
+
+:host ::deep .periode-details > ul.list-group > li.list-group-item .flex-grow-1 strong {
+    color: var(--color-gold);
+}
+
+/* 4.5) Rediger/Slet-knapper */
+:host ::deep .periode-details > ul.list-group > li.list-group-item .btn-sm {
+    margin-left: 0.5rem;
+    transition: transform 0.1s ease-in-out;
+}
+
+:host ::deep .periode-details > ul.list-group > li.list-group-item .btn-primary {
+    background-color: var(--color-navy);
+    border: none;
+    color: var(--color-surface);
+}
+
+:host ::deep .periode-details > ul.list-group > li.list-group-item .btn-primary:hover {
+    background-color: #0f1a23;
+    transform: translateY(-1px);
+}
+
+:host ::deep .periode-details > ul.list-group > li.list-group-item .btn-danger {
+    background-color: var(--color-gold);
+    border: none;
+    color: var(--color-surface);
+}
+
+:host ::deep .periode-details > ul.list-group > li.list-group-item .btn-danger:hover {
+    background-color: var(--color-gold-dark);
+    transform: translateY(-1px);
+}
+
+/* -----------------------------------------------------------
+   5) Formular til “Tilføj nyt delmål”
+   ----------------------------------------------------------- */
+:host ::deep .periode-details > .mt-3 {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-background);
+}
+
+/* 5.1) Overskrift “Tilføj nyt delmål” */
+:host ::deep .periode-details > .mt-3 h6 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+/* 5.2) Input-felter */
+:host ::deep .periode-details > .mt-3 .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 0.4rem;
+    font-size: 0.92rem;
+    padding: 0.45rem 0.6rem;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+:host ::deep .periode-details > .mt-3 .form-control:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 0.15rem rgba(170, 141, 101, 0.25);
+}
+
+/* 5.3) Knappen “Tilføj” */
+:host ::deep .periode-details > .mt-3 .btn-primary {
+    background-color: var(--color-navy);
+    border: none;
+    color: var(--color-surface);
+    padding: 0.45rem 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 0.4rem;
+    margin-top: 0.5rem;
+    transition: background-color var(--transition-fast), transform 0.1s ease-in-out;
+}
+
+:host ::deep .periode-details > .mt-3 .btn-primary:hover {
+    background-color: #0f1a23;
+    transform: translateY(-1px);
+}
+
+/* -----------------------------------------------------------
+   6) Modal-footer
+   ----------------------------------------------------------- */
+:host ::deep .modal-footer {
+    background-color: #f7f7f7;
+    padding: 0.75rem 1.5rem;
+    border-top: none;
+}
+
+:host ::deep .modal-footer .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: var(--color-surface);
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.4rem;
+    transition: background-color var(--transition-fast), transform 0.1s ease-in-out;
+}
+
+:host ::deep .modal-footer .btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* -----------------------------------------------------------
+   7) Responsivt (under 768px)
+   ----------------------------------------------------------- */
+@media (max-width: 768px) {
+    :host ::deep .periode-summary {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.95rem;
+    }
+    :host ::deep .periode-details > ul.list-group {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+    :host ::deep .periode-summary .chevron {
+        width: 0.5em;
+        height: 0.5em;
+    }
 }
