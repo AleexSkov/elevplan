@@ -87,12 +87,15 @@
     private string selectedId = string.Empty;
 
     /// <summary>
-    /// Filtrerer og sorterer elevplaner ud fra søgning og sortering.
+    /// Filtrerer og sorterer elevplaner ud fra søgning, sortering og udelukker ElevId = 1.
     /// </summary>
     private IEnumerable<Elevplan> DisplayedElever =>
         (elever ?? new List<Elevplan>())
-        .Where(e => string.IsNullOrWhiteSpace(searchTerm)
-                    || e.ElevNavn.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        .Where(e =>
+            e.Id != 1 && // Filtrér væk de elevplaner med id == 1
+            (string.IsNullOrWhiteSpace(searchTerm)
+             || e.ElevNavn.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        )
         .OrderByDescending(e => sortByCompleted ? TotalCompleted(e) : 0)
         .ThenBy(e => sortByCompleted ? string.Empty : e.ElevNavn);
 
