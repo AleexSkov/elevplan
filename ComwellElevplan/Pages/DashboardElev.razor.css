@@ -1,113 +1,179 @@
-﻿/* Layout for Dashboard panels */
-.dashboard {
-    padding: 1.5rem;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
+﻿/* ===========================================
+   A. BEVAR DEN EKSISTERENDE GULE FARVE I “Greeting”
+   =========================================== */
 .greeting {
-    background-color: #aa8d65;
+    background-color: #aa8d65; /* Samme gul/olivengrønne nuance */
     color: #182b39;
     padding: 1.5rem;
     border-radius: 0.5rem;
 }
-
 .greeting h3 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
 }
 
-/* Stats panel */
-.stats {
+/* ===========================================
+   B. “Mangler i perioden” – FARVE, STYLISTISK UTTRYK
+   =========================================== */
+
+/* Selve panelet */
+.panel {
+    background-color: #ffffff;              /* Hvid baggrund */
+    border: 2px solid #e0e0e0;               /* Tynd, lys grå kant */
+    border-radius: 0.75rem;                  /* Runde hjørner */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);  /* Blød, let skygge */
+    overflow: hidden;                        /* Afskærmer headerens afrundede hjørner */
+}
+
+/* PANEL-HEADER med samme gule farve (#aa8d65) */
+.panel-header {
+    background-color: #aa8d65; /* GENBRUG af “greeting”-farven */
+    padding: 1rem 1.5rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.stat-item {
-    background-color: #f3f4f6;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    flex: 1 1 240px;
-}
-
-.stat-item .label {
-    color: #6b7280;
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
-}
-
-.stat-item .value {
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-/* Panels container uses Bootstrap row/col, no custom grid override */
-.dashboard-grid {
-    margin: 0 -0.75rem;
-}
-
-.dashboard-grid .panel {
-    background-color: #f3f4f6;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    margin: 0.75rem;
-}
-
-.panel h4 {
-    font-size: 1.25rem;
+.panel-header h4 {
+    margin: 0;
+    font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    color: #ffffff; /* Hvid tekst på det gule baggrund */
 }
 
-/* List styling */
-.notification-list,
-.leaderboard-list,
-.task-list {
+/* Antals-badge i header */
+.panel-badge {
+    background-color: #182b39; /* Mørk blå/tekst‐farve for kontrast */
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+}
+
+/* Status-tekst, når alt er gennemført */
+.all-complete {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    color: #1e7e34;            /* Mørkegrøn tekst */
+    background-color: #d4edda; /* Lys grøn baggrund */
+    border-left: 4px solid #28a745;
+    border-radius: 0 0 0.75rem 0.75rem; /* Afrund bunden af panelet */
+}
+
+/* Selve listen (giver max-højde og scrollbar) */
+.fancy-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    max-height: 50vh;
+    overflow-y: auto;
 }
 
-.notification-list li,
-.leaderboard-list li,
-.task-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #e5e7eb;
+/* Hvert enkelt listeelement */
+.fancy-item {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid #eaeaea;
+    transition: background-color 0.2s ease;
 }
 
-.notification-list li:last-child,
-.leaderboard-list li:last-child,
-.task-list li:last-child {
+/* Sidste element – fjern bundkant */
+.fancy-item:last-child {
     border-bottom: none;
 }
 
-.time {
-    font-size: 0.75rem;
-    color: #4b5563;
+/* Hover-effekt */
+.fancy-item:hover {
+    background-color: #f7f7f5; /* Meget lys, diskret nuance */
+    cursor: default;
 }
 
-/* Leaderboard overrides */
-.leaderboard-list .badge {
-    background-color: #aa8d65;
-    color: #fff;
-    padding: 0.25rem 0.75rem;
+/* “Kategori”-badge inde i hvert item */
+.item-category {
+    background-color: #aa8d65; /* GENBRUG af gul/olivengrøn til badge */
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    max-width: fit-content;
 }
 
-/* Responsive tweaks (fallback to single column) */
+/* Tekst-indholdet i hvert element */
+.item-text {
+    color: #333333;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* ===========================================
+   C. Leaderboard-panelet (let styling for ensartet look)
+   =========================================== */
+
+/* Holder samme header‐design som andre paneler, men med mørkere baggrund */
+.simple-header {
+    background-color: #f0f0f0; /* Lys grå tone til at skille sig lidt ud */
+    padding: 1rem 1.5rem;
+}
+
+.simple-header h4 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c2e33;
+}
+
+/* Liste‐elementer i leaderboard */
+.leaderboard-list .list-group-item {
+    background-color: #ffffff;
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s ease;
+}
+
+.leaderboard-list .list-group-item:hover {
+    background-color: #f1f3f5;
+}
+
+/* ===========================================
+   D. RESPONSIVE (for skærme under 768px)
+   =========================================== */
 @media (max-width: 768px) {
-    .stats {
-        display: flex;
+    /* Panel-headerer justeres til kolonnelayout */
+    .panel-header,
+    .simple-header {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .panel-header h4,
+    .simple-header h4 {
+        font-size: 1.25rem;
+    }
+    .panel-header .panel-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
     }
 
-    .dashboard-grid .panel {
-        margin: 0 0 1rem 0;
+    /* Listeelementer i fancy-list går til én kolonne */
+    .fancy-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+    }
+    .item-category {
+        margin-bottom: 0.25rem;
+    }
+    .item-text {
+        font-size: 0.9rem;
+    }
+    .all-complete {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
     }
 }
