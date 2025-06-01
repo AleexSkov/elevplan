@@ -11,9 +11,7 @@
       <div class="modal-header d-flex align-items-center">
         <!-- Viser titel med elevens navn -->
         <h5 class="modal-title">@Title</h5>
-        <button type="button" class="custom-close ms-auto" @onclick="Close" title="Luk">
-          &times;
-        </button>
+        <button type="button" class="btn-close btn-close-white" aria-label="Luk" @onclick="Close"></button>
       </div>
       <div class="modal-body">
         @if (Elevplan is null)
@@ -26,8 +24,15 @@
           <!-- Gennemløber alle praktikperioder i elevplanen -->
           @foreach (var periode in Elevplan.Praktikperioder)
           {
-            <div class="mb-3">
-              <h5>Periode @periode.PeriodeNummer (@periode.VarighedUger uger)</h5>
+            <!-- Her starter dropdown’en for hver Periode -->
+            <details class="periode-details mb-3">
+              <!-- Summary‐elementet viser altid overskriften -->
+              <summary class="periode-summary">
+                <span>Periode @periode.PeriodeNummer (@periode.VarighedUger uger)</span>
+                <i class="chevron"></i>
+              </summary>
+
+              <!-- ALT det der før lå i <div class="mb-3"> … </div> ligger nu inde i details: -->
               <ul class="list-group">
                 <!-- Viser alle delmål/opgaver for perioden -->
                 @foreach (var delmaal in periode.Opgaver)
@@ -88,7 +93,8 @@
                   </EditForm>
                 </div>
               }
-            </div>
+            </details>
+            <!-- Her slutter dropdown’en for denne Periode -->
           }
         }
       </div>

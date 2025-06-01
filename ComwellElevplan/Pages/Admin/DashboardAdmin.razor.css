@@ -1,0 +1,274 @@
+/* -------------------------------------------------
+   DashboardAdmin.razor.css (simpel, isoleret styling)
+   ------------------------------------------------- */
+
+/* 1) Overordnet container for komponenten */
+:host {
+    display: block;
+    padding: 1.5rem;
+    background-color: #f9f9f9; /* Lys grå baggrund for helheden */
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    color: #182b39; /* Mørk navy som standard tekstfarve */
+}
+
+/* 2) Hovedoverskrift */
+h3 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #182b39;
+    border-left: 4px solid #aa8d65;
+    padding-left: 0.75rem;
+}
+
+/* 3) Søge- og knap-sektionen */
+.mb-3.d-flex.align-items-center {
+    background-color: #ffffff;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem !important;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* 3.1) Søgefelt (input) */
+.mb-3.d-flex.align-items-center input.form-control {
+    flex: 1 1 250px; /* Fylder tilgængelig plads, dog mindst 250px */
+    max-width: 350px;
+    border: 2px solid #aa8d65;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.mb-3.d-flex.align-items-center input.form-control:focus {
+    outline: none;
+    border-color: #182b39;
+    box-shadow: 0 0 0 0.2rem rgba(24, 43, 57, 0.2);
+}
+
+/* 3.2) De to knapper (Sorter + Eksporter) */
+.mb-3.d-flex.align-items-center .btn {
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+/* Sorter-knap - outline style */
+.mb-3.d-flex.align-items-center .btn-outline-secondary {
+    color: #182b39;
+    border: 2px solid #182b39;
+    background-color: transparent;
+}
+
+.mb-3.d-flex.align-items-center .btn-outline-secondary:hover {
+    background-color: #182b39;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Eksporter-knap - solid accent */
+.mb-3.d-flex.align-items-center .btn-success {
+    background-color: #aa8d65;
+    border: none;
+    color: #ffffff;
+}
+
+.mb-3.d-flex.align-items-center .btn-success:hover {
+    background-color: #8b7a52;
+    transform: translateY(-1px);
+}
+
+/* 3.3) Supplerende tekst til højre */
+.mb-3.d-flex.align-items-center .text-muted.ms-2 {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-left: 0.75rem !important;
+}
+
+/* 4) Tabel */
+.table {
+    width: 100%;
+    border-collapse: separate; /* så border-radius på thead virker */
+    border-spacing: 0;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 4.1) Tabel-head */
+.table thead {
+    background-color: #182b39;
+}
+
+.table thead th {
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border-bottom: 2px solid #0f1a23;
+    text-align: left;
+}
+
+/* 4.2) Tabel-body - zebra-striber og hover */
+.table tbody tr:nth-child(odd) {
+    background-color: #fbfbfb;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease-in-out;
+}
+
+.table tbody tr:hover {
+    background-color: #eef4f7;
+}
+
+/* 4.3) Celler */
+.table td {
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    color: #182b39;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Sidste række uden bottom-border */
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 4.4) 'Se plan'-knap i tabellen */
+.table .btn-sm {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 0.4rem;
+    background-color: #aa8d65;
+    border: none;
+    color: #ffffff;
+    transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.table .btn-sm:hover {
+    background-color: #8b7a52;
+    transform: translateY(-1px);
+}
+
+/* 5) Modal (Blazor/ElevplanModal) */
+:host ::deep .modal-content {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+:host ::deep .modal-header {
+    background-color: #182b39;
+    border-bottom: none;
+    padding: 1rem 1.5rem;
+}
+
+:host ::deep .modal-header .modal-title {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+:host ::deep .modal-header .btn-close {
+    filter: invert(1);
+}
+
+:host ::deep .modal-body {
+    padding: 1.25rem 1.5rem;
+    background-color: #fafafa;
+}
+
+:host ::deep .modal-footer {
+    border-top: none;
+    padding: 1rem 1.5rem;
+    background-color: #f7f7f7;
+}
+
+:host ::deep .modal-footer .btn {
+    border-radius: 0.4rem;
+    padding: 0.5rem 0.9rem;
+}
+
+:host ::deep .modal-footer .btn-primary {
+    background-color: #aa8d65;
+    border: none;
+}
+
+:host ::deep .modal-footer .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: #ffffff;
+}
+
+/* 6) Responsivt design (små skærme) */
+@media (max-width: 768px) {
+    /* 6.1) Mindre overskrift */
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    /* 6.2) Søge/knap-sektionen stables lodret */
+    .mb-3.d-flex.align-items-center {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .mb-3.d-flex.align-items-center input.form-control,
+    .mb-3.d-flex.align-items-center .btn {
+        width: 100%;
+    }
+
+    /* 6.3) Tabel → kortvisning */
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        background-color: #ffffff;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .table td {
+        padding: 0.75rem 1rem;
+        text-align: right;
+        position: relative;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        font-weight: 600;
+        color: #182b39;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+    }
+
+    .table td:last-child {
+        padding-bottom: 1.5rem;
+    }
+}
