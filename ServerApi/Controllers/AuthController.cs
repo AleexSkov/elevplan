@@ -22,12 +22,7 @@ namespace ServerApi.Controllers
         }
 
         // Bruges til at returnere ekstra info ved brugeroprettelse
-        public class RegisterResponse
-        {
-            public string Message { get; set; } = default!;
-            public string Password { get; set; } = default!;
-            public string? ElevId { get; set; }
-        }
+     
 
         /// <summary>
         /// Endpoint til at registrere en ny bruger (Elev/Admin).
