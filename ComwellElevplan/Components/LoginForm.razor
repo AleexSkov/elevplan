@@ -70,11 +70,24 @@
         {
             Nav.NavigateTo("/changepassword");
         }
+        
         else
         {
-            Nav.NavigateTo("/profil");
+            Nav.NavigateTo("/dashboard");
+        }
+
+        if (result.Role == "Admin") ;
+        {
+            Nav.NavigateTo("/DashboardAdmin");
+        }
+
+        if (result.Role == "Elev") ;
+        {
+            Nav.NavigateTo("/Dashboard");
         }
     }
 
+    }
     
-}
+
+    
