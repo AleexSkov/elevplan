@@ -160,17 +160,7 @@
     justify-content: center;
 }
 
-/* Knappen "Opret ny" eller lignende */
-.new-button {
-    background-color: #aa8d65;
-    color: rgb(24, 43, 57);
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    border: none;
-    cursor: pointer;
-}
+
 
 /* Indholdsområde */
 .content {
