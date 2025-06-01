@@ -54,4 +54,15 @@ namespace Core.Models
         [BsonElement("gennemført")]
         public bool Gennemført { get; set; }
     }
+    
+    /// <summary>
+    /// Request-body til UpdateOpgave – bruges til at identificere og opdatere ét delmål.
+    /// </summary>
+    public class UpdateOpgaveRequest
+    {
+        public int    PeriodeNummer { get; set; }
+        public string Kategori      { get; set; } = string.Empty;
+        public string Beskrivelse   { get; set; } = string.Empty;
+        public bool   Gennemført    { get; set; }
+    }
 }

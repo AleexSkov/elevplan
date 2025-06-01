@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
+
 <h3>Log ind</h3>
 
 <!-- Formular til login med email og adgangskode -->
@@ -32,7 +33,7 @@
 
 @code {
 /// <summary>Loginoplysninger brugeren indtaster</summary>
-    private LoginRequest credentials = new();
+    private LoginModel credentials = new();
     private string? error;
 
 /// <summary>Sender login-data til API og håndterer svar</summary>
@@ -75,13 +76,5 @@
         }
     }
 
-
-    public class LoginResponse
-    {
-        public string Email              { get; set; } = default!;
-        public string Name               { get; set; } = default!;
-        public string Role               { get; set; } = default!;
-        public bool   MustChangePassword { get; set; }
-        public string? ElevId            { get; set; }
-    }
+    
 }

@@ -86,20 +86,13 @@ namespace ServerApi.Controllers
             });
         }
 
-        public class LoginResponse
-        {
-            public string Email { get; set; } = default!;
-            public string Name { get; set; } = default!;
-            public string Role { get; set; } = default!;
-            public bool MustChangePassword { get; set; }
-            public string? ElevId { get; set; }
-        }
+       
 
         /// <summary>
         /// Login endpoint – validerer bruger og returnerer info.
         /// </summary>
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest req)
+        public async Task<IActionResult> Login([FromBody] LoginModel req)
         {
             var user = await _appUserRepo.GetByEmailAsync(req.Email);
             if (user == null)
