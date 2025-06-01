@@ -9,52 +9,104 @@
 @inject IJSRuntime JS                   
 <!-- Bruges til at læse elevId fra localStorage -->
 
-<h3>Min Elevplan</h3>
+<!-- Hele siden ombrydes af elevplan-container -->
+<div class="elevplan-container">
 
-@if (plan is null)
-{
-    <p>Indlæser din elevplan…</p>        <!-- Ventebesked -->
-}
-else
-{
-    <!-- Info om elev og plan -->
-    <div class="mb-3">
-        <h4>@plan.ElevNavn</h4>
-        <p><strong>Skole:</strong> @plan.Skole</p>
-        <p><strong>Aftaleform:</strong> @plan.Aftaleform</p>
+    <!-- Topbar (evt. kan du fjerne, hvis du ikke ønsker en topbar) -->
+    <div class="topbar">
+        <div class="topbar-content">
+            <h1>Min Elevplan</h1>
+            <!-- Her kan du tilføje knapper eller dropdowns, hvis du ønsker -->
+            <div class="topbar-actions">
+                <!-- Eksempel på en knap i topbaren -->
+                <button class="new-button">
+                    <i class="bi bi-plus-lg"></i>
+                    Ny plan
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- Dropdown til at vælge praktikperiode -->
-    <div class="mb-3">
-        <label>Vælg periode:</label>
-        <select @onchange="OnPeriodChanged" class="form-select">
-            @foreach (var p in plan.Praktikperioder)
-            {
-                <option value="@p.PeriodeNummer">
-                    Periode @p.PeriodeNummer (@p.VarighedUger uger)
-                </option>
-            }
-        </select>
-    </div>
+    <!-- Main content -->
+    <div class="main-content">
 
-    @if (selectedPeriod != null)
-    {
-        <!-- Liste over delmål i den valgte periode -->
-        <h5>Delmål for Periode @selectedPeriod.PeriodeNummer</h5>
-        <ul class="list-group">
-            @foreach (var delmaal in selectedPeriod.Opgaver)
-            {
-                <li class="list-group-item d-flex align-items-center">
-                    <input type="checkbox" class="form-check-input me-2" checked="@delmaal.Gennemført" disabled />
-                    <div class="flex-grow-1">
-                        <strong>@delmaal.Kategori:</strong> @delmaal.Beskrivelse<br />
-                        <small>Ansvarlig: @delmaal.Ansvarlig, Initiator: @delmaal.Initiator, Deadline: @delmaal.Tidslinje</small>
+        <!-- Elev Header: navn, skole, aftaleform -->
+        @if (plan is null)
+        {
+            <p class="loading">Indlæser din elevplan…</p>
+        }
+        else
+        {
+            <div class="elev-header">
+                <div class="elev-title">
+                    <i class="bi bi-person-circle"></i>
+                    <h2>@plan.ElevNavn</h2>
+                </div>
+                <div class="elev-info">
+                    <div class="info-item">
+                        <i class="bi bi-building"></i>
+                        <span class="label">Skole:</span>
+                        <span>@plan.Skole</span>
                     </div>
-                </li>
+                    <div class="info-item">
+                        <i class="bi bi-journal-text"></i>
+                        <span class="label">Aftaleform:</span>
+                        <span>@plan.Aftaleform</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Periode‐valg -->
+            <div class="period-header">
+                <label for="periode-select" class="form-label"><strong>Vælg periode:</strong></label>
+                <select id="periode-select" @onchange="OnPeriodChanged" class="form-select elev-selector">
+                    @foreach (var p in plan.Praktikperioder)
+                    {
+                        <option value="@p.PeriodeNummer">
+                            Periode @p.PeriodeNummer (@p.VarighedUger uger)
+                        </option>
+                    }
+                </select>
+            </div>
+
+            @if (selectedPeriod != null)
+            {
+                <div class="tab-content">
+                    <h3 class="period-title">Delmål for Periode @selectedPeriod.PeriodeNummer</h3>
+                    <div class="tasks-list">
+                        @foreach (var delmaal in selectedPeriod.Opgaver)
+                        {
+                            <div class="task @(delmaal.Gennemført ? "status-completed" : "status-pending")">
+                                <div class="task-status">
+                                    @if (delmaal.Gennemført)
+                                    {
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-clock-fill"></i>
+                                    }
+                                </div>
+                                <div class="task-content">
+                                    <div class="task-title">
+                                        <strong>@delmaal.Kategori:</strong> @delmaal.Beskrivelse
+                                    </div>
+                                    <div class="task-details">
+                                        <div><strong>Ansvarlig:</strong> @delmaal.Ansvarlig</div>
+                                        <div><strong>Initiator:</strong> @delmaal.Initiator</div>
+                                        <div><strong>Deadline:</strong> @delmaal.Tidslinje</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             }
-        </ul>
-    }
-}
+        }
+
+    </div> <!-- /.main-content -->
+
+</div> <!-- /.elevplan-container -->
 
 @code {
     private Elevplan? plan;                              // Hele elevens praktikplan

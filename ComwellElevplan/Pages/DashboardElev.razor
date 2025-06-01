@@ -56,18 +56,24 @@
 
             <!-- Panel: Manglende delmål -->
             <div class="panel col-md-6">
-                <h4>Mangler i perioden</h4>
+                <!-- Header bruger samme gule/olivengrønne farve som .greeting -->
+                <div class="panel-header">
+                    <h4>Mangler i perioden</h4>
+                    <span class="panel-badge">@MissingDelmaal.Count</span>
+                </div>
+
                 @if (!MissingDelmaal.Any())
                 {
-                    <p class="text-success">Alle delmål er gennemført! 🎉</p>
+                    <p class="all-complete">Alle delmål er gennemført! 🎉</p>
                 }
                 else
                 {
-                    <ul class="list-group">
+                    <ul class="fancy-list">
                         @foreach (var d in MissingDelmaal)
                         {
-                            <li class="list-group-item">
-                                <strong>@d.Kategori:</strong> @d.Beskrivelse
+                            <li class="fancy-item">
+                                <div class="item-category">@d.Kategori</div>
+                                <div class="item-text">@d.Beskrivelse</div>
                             </li>
                         }
                     </ul>
@@ -76,7 +82,9 @@
 
             <!-- Panel: Leaderboard -->
             <div class="panel col-md-6">
-                <h4>Top 3 elever</h4>
+                <div class="panel-header simple-header">
+                    <h4>Top 3 elever</h4>
+                </div>
                 <ul class="leaderboard-list list-group">
                     @foreach (var entry in Leaderboard)
                     {
