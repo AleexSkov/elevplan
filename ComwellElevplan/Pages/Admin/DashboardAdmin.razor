@@ -93,7 +93,7 @@
     private IEnumerable<Elevplan> DisplayedElever =>
         (elever ?? new List<Elevplan>())
         .Where(e =>
-            e.Id != 1 && // Filtrér væk de elevplaner med id == 1
+            e.Id != 1 &&
             (string.IsNullOrWhiteSpace(searchTerm)
              || e.ElevNavn.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
         )

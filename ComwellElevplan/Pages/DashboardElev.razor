@@ -117,11 +117,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // henter elevId fra lokalstorage v
+        // henter elevId fra lokalstorage 
+        // STEP 4: Henter elevId fra localStorage og Kalder ElevplanController for at hente elevplan -> se ElevplanController.cs
         var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
         if (!string.IsNullOrEmpty(elevId))
         {
-            // Metode: Http.GetFromJsonAsync<Elevplan> 
+            
             plan = await Http.GetFromJsonAsync<Elevplan>($"api/elevplaner/{elevId}");
             if (plan != null)
             {

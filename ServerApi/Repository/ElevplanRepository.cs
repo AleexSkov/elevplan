@@ -35,6 +35,7 @@ namespace ServerApi.Repository
         }
 
         // Henter en elevplan ud fra elevens ID
+        // STEP 6: Henter elevplan fra MongoDB -> svar sendes retur til ElevplanController
         public async Task<Elevplan?> GetByElevIdAsync(string elevId)
         {
             var filter = Builders<Elevplan>.Filter.Eq(p => p.ElevId, elevId);

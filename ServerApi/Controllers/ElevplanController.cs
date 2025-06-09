@@ -28,17 +28,18 @@ namespace ServerApi.Controllers
         /// Henter en specifik elevplan baseret på elevens ID.
         /// Returnerer 404 hvis ikke fundet.
         /// </summary>
+        // STEP 5: Sender forespørgsel videre via HttpGet til repository -> se ElevplanRepository.GetByElevIdAsync
         [HttpGet("{elevId}")]
         public async Task<ActionResult<Elevplan?>> GetByElevId(string elevId)
         {
             // Henter planen for den elev 
             var plan = await _elevplanService.GetByElevIdAsync(elevId);
-            // retunere plan eller 404
+            //STEP 7 : retunere plan eller 404, nu er dataen loaded på dashboardelev
             return plan == null ? NotFound() : Ok(plan);
         }
 
-        /// <summary>
-        /// Eksporterer hele elevplanen som JSON til fx download eller kopi.
+       /* /// <summary>
+        /// mulighed for at kunne Eksporterer hele elevplanen som JSON til fx download eller kopi. ( ikke funktionel)
         /// Samme som GetByElevId men med en anden rute.
         /// </summary>
         [HttpGet("{elevId}/export")]
@@ -50,6 +51,7 @@ namespace ServerApi.Controllers
 
             return Ok(plan); // Returner hele planen i JSON-format
         }
+        */
 
         /// <summary>
         /// Opdaterer ét delmål (opgave) i en given praktikperiode for en elev.
