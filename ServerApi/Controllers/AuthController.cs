@@ -109,7 +109,7 @@ namespace ServerApi.Controllers
             HttpContext.Session.SetString("user_role", user.Role);
 
             string? elevId = null;
-
+            // STEP 2: Validerer bruger og henter evt. elevplan -> næste stop er LoginForm for at gemme elevId
             // Find elevId hvis brugeren er elev, hent elevplan og udtræk elevid 
             if (user.Role == "Elev")
             {

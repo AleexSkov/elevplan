@@ -45,7 +45,7 @@
     /// </summary>
     private async Task HandleLogin()
     {
-        // sender login-data til API-endpoint via api/auth/login
+        // STEP 1: Sender login-info til AuthController -> se ServerApi/Controllers/AuthController.cs
         var resp = await Http.PostAsJsonAsync("api/auth/login", credentials);
         // tjek om login lykkedes
         if (!resp.IsSuccessStatusCode)
@@ -72,6 +72,7 @@
         await JS.InvokeVoidAsync("localStorage.setItem", "mustChangePassword", result.MustChangePassword.ToString());
 
         // Hvis brugeren er Elev, gem ElevId
+        // STEP 3: Her bliver Elevid gemt i local storage til implementation i dashboardelev
         if (result.ElevId is not null)
         {
             await JS.InvokeVoidAsync("localStorage.setItem", "elevId", result.ElevId);
@@ -88,7 +89,7 @@
         {
             Nav.NavigateTo("/DashboardAdmin");
         }
-
+        // STEP 3: går til Dashboard -> se DashboardElev.razor
         else if (result.Role == "Elev") 
         {
             Nav.NavigateTo("/Dashboard");
