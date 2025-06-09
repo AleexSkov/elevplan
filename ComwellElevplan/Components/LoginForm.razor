@@ -32,25 +32,36 @@
 }
 
 @code {
-/// <summary>Loginoplysninger brugeren indtaster</summary>
+    /// <summary>
+/// Loginoplysninger brugeren indtaster
+    /// </summary>
     private LoginModel credentials = new();
-    private string? error;
-
-/// <summary>Sender login-data til API og håndterer svar</summary>
+    // credentials en objekt/instans af typen LoginModel
+    private string? error; // gem fejlbesked 
+    // v til at gemme fejl beskeder 
+    
+    /// <summary> 
+/// Sender login-data til API og håndterer svar, m kaldes når formularen valideres og log in knappen klikkes 
+    /// </summary>
     private async Task HandleLogin()
     {
+        // sender login-data til API-endpoint via api/auth/login
         var resp = await Http.PostAsJsonAsync("api/auth/login", credentials);
-
+        // tjek om login lykkedes
         if (!resp.IsSuccessStatusCode)
         {
+            // hent fejlbesked
             error = await resp.Content.ReadAsStringAsync();
-            return;
+            return; // afslut metoden
         }
 
+        // Hvis succes, læs loginrespons 
         var result = await resp.Content.ReadFromJsonAsync<LoginResponse>();
 
+        
         if (result is null)
         {
+            // hvis null,sæt en general fejlbesked 
             error = "Noget gik galt med login.";
             return;
         }
@@ -60,12 +71,13 @@
         await JS.InvokeVoidAsync("localStorage.setItem", "userRole", result.Role);
         await JS.InvokeVoidAsync("localStorage.setItem", "mustChangePassword", result.MustChangePassword.ToString());
 
+        // Hvis brugeren er Elev, gem ElevId
         if (result.ElevId is not null)
         {
             await JS.InvokeVoidAsync("localStorage.setItem", "elevId", result.ElevId);
         }
 
-        // Hvis brugeren skal ændre kode ved første login – navigér til ChangePassword siden
+        // Hvis brugeren skal ændre kode ved første login – navigér til ChangePassword siden mustChangePassword er true
         if (result.MustChangePassword)
         {
             Nav.NavigateTo("/changepassword");
@@ -83,8 +95,9 @@
         }
        
     }
-
-    }
+//AuthController
+// AppUserRepository
+}
     
 
     

@@ -11,24 +11,27 @@ namespace ServerApi.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
+        // 1) felter til at holde på repository-objekter (interfaceses) som injiceres via konstruktøren nedenfor
         private readonly IAppUser _appUserRepo;
         private readonly IElevplan _elevplanService;
 
         // Dependency injection af bruger- og elevplanrepositories
-        public AuthController(IAppUser appUserRepo, IElevplan elevplanService)
+       
+        // konstruktør med parametre AppUserRepository og Elevplanservice
+        public AuthController(IAppUser appUserRepo, IElevplan elevplanService) // konstruktør: her injiceres dependencies (IAppUser og IElevplan) automatisk
         {
-            _appUserRepo = appUserRepo;
-            _elevplanService = elevplanService;
+            _appUserRepo = appUserRepo; // tildeler det injicerede repository til det private 
+            _elevplanService = elevplanService; // tildeler den injicerede elevplan-service til feltet 
         }
 
         // Bruges til at returnere ekstra info ved brugeroprettelse
      
 
-        /// <summary>
+      /// <summary>
         /// Endpoint til at registrere en ny bruger (Elev/Admin).
         /// </summary>
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] AppUser newUser)
+        public async Task<IActionResult> Register([FromBody] AppUser newUser) 
         {
             // Valider at e-mail og adgangskode er givet
             if (string.IsNullOrWhiteSpace(newUser.Email)
@@ -39,17 +42,17 @@ namespace ServerApi.Controllers
             if (await _appUserRepo.EmailExistsAsync(newUser.Email))
                 return Conflict("En bruger med denne email findes allerede.");
 
-            var rawPw = newUser.PasswordHash;
-            var hasher = new PasswordHasher<AppUser>();
-            newUser.PasswordHash = hasher.HashPassword(newUser, rawPw);
-            newUser.MustChangePassword = true;
-            newUser.Id = MongoDB.Bson.ObjectId.GenerateNewId();
-            newUser.CreatedAt = DateTime.UtcNow;
+            var rawPw = newUser.PasswordHash; // gemmer den rå adgangskode i en lokal variabel
+            var hasher = new PasswordHasher<AppUser>(); // opretter en passwordHasher til at hashe adgangskode 
+            newUser.PasswordHash = hasher.HashPassword(newUser, rawPw); // hash adgangskoden og gem i newUser.passwordHash
+            newUser.MustChangePassword = true; // Marker, at brugeren skal skifte kode 
+            newUser.Id = MongoDB.Bson.ObjectId.GenerateNewId(); //  Genererer et nyt ObjectId fra MongoDB-driveren (unik ID)
+            newUser.CreatedAt = DateTime.UtcNow; // sætter oprettelsesdato
 
             // Gem brugeren i databasen
-            await _appUserRepo.CreateAsync(newUser);
+            await _appUserRepo.CreateAsync(newUser); // kalder repository 
 
-            string? elevId = null;
+            string? elevId = null; //  // Initialiserer elevId til null – bruges kun hvis role == “Elev”
 
             // Hvis brugeren er Elev, opret en tom elevplan baseret på en skabelon
             if (newUser.Role == "Elev")
@@ -67,8 +70,8 @@ namespace ServerApi.Controllers
                         OprettetDato = DateTime.UtcNow,
                         OpdateretDato = DateTime.UtcNow
                     };
-                    await _elevplanService.CreateAsync(plan);
-                    elevId = plan.ElevId;
+                    await _elevplanService.CreateAsync(plan); // gemmer den nye elevplan i databasen via IElevplan-servicen
+                    elevId = plan.ElevId; // gemmer elevId i lokal variabel, som sendes til frontend
                 }
             }
 
@@ -89,11 +92,14 @@ namespace ServerApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel req)
         {
+            // Forsøg at hente brugeren (AppUser) ud fra e-mail i databasen
             var user = await _appUserRepo.GetByEmailAsync(req.Email);
             if (user == null)
                 return Unauthorized("Ugyldig email eller adgangskode");
 
+            // opret PasswordHasher og tjek adgangskode mod den hashede version
             var hasher = new PasswordHasher<AppUser>();
+            // VerifierHashedPassword retunerer en (success/failed)
             var res = hasher.VerifyHashedPassword(user, user.PasswordHash, req.Password);
             if (res == PasswordVerificationResult.Failed)
                 return Unauthorized("Ugyldig email eller adgangskode");
@@ -104,13 +110,15 @@ namespace ServerApi.Controllers
 
             string? elevId = null;
 
-            // Find elevId hvis brugeren er elev
+            // Find elevId hvis brugeren er elev, hent elevplan og udtræk elevid 
             if (user.Role == "Elev")
             {
+                // Hent elevplan baseret på brugerens ID
                 var plan = await _elevplanService.GetByElevIdAsync(user.Id.ToString());
                 elevId = plan?.ElevId;
             }
 
+            // disse data bliver i blazor-klient brugt til at gemme i localStorage
             return Ok(new LoginResponse
             {
                 Email = user.Email,
@@ -127,17 +135,23 @@ namespace ServerApi.Controllers
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel m)
         {
+            // finder brugren i databasen 
             var user = await _appUserRepo.GetByEmailAsync(m.Email);
             if (user == null)
                 return NotFound("Bruger ikke fundet");
 
+            // opretter en passwordHasher til at samlinge/hash 
             var hasher = new PasswordHasher<AppUser>();
+            
+            // verificerer, at den indtastede "currentpassword" matcher den hashede version
             var res = hasher.VerifyHashedPassword(user, user.PasswordHash, m.CurrentPassword);
             if (res == PasswordVerificationResult.Failed)
                 return BadRequest(new { error = "Nuværende adgangskode er forkert" });
 
+            // Hasher den nye kode og gemmer den i brugerobjektet
             user.PasswordHash = hasher.HashPassword(user, m.NewPassword);
             user.MustChangePassword = false;
+            // opdaterer det eksisterende brugerobjekt i databasen med ny kode
             await _appUserRepo.UpdateAsync(user.Id, user);
 
             return Ok("Adgangskode opdateret");

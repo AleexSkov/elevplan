@@ -72,45 +72,45 @@
 </div>
 
 @code {
-    private AppUser newUser = new();                 // Bruger der oprettes
-    private string? generatedPassword;              // Gemmer genereret adgangskode
-    private string? generatedElevId;                // Evt. elev-ID ved oprettelse
-    private string? message;                        // Fejl/succes-besked
+    private AppUser newUser = new();   // Bruger der oprettes
+    private string? generatedPassword;   // Gemmer genereret adgangskode
+    private string? generatedElevId;     // Evt. elev-ID ved oprettelse
+    private string? message;    // Fejl/succes-besked
 
-    // Model for API-respons
+    // Model for API-respons, den besked backend retunere 
     private record RegisterResponse(
         string Message,
         string Password,
         string? ElevId);
 
     /// <summary>
-    /// Håndterer oprettelsen af ny bruger og viser responsdata
+    /// M. Håndterer oprettelsen af ny bruger og viser responsdata
     /// </summary>
     private async Task HandleRegister()
     {
-        generatedPassword = GenerateRandomPassword();           // Genererer adgangskode
-        newUser.PasswordHash = generatedPassword;
-        message = null;
-        generatedElevId = null;
+        generatedPassword = GenerateRandomPassword(); // kalder privat metode GenerateRandomPassword
+        newUser.PasswordHash = generatedPassword; // 
+        message = null; // nulstil tidligere besked 
+        generatedElevId = null; // nulstil tidligere elev-ID, hvis det var sat 
 
         // Sender POST-request til backend med brugeroplysninger
         var response = await Http.PostAsJsonAsync("api/auth/register", newUser);
         if (response.IsSuccessStatusCode)
         {
-            var result = await response.Content.ReadFromJsonAsync<RegisterResponse>();
-            if (result is not null)
+            var result = await response.Content.ReadFromJsonAsync<RegisterResponse>(); // læs JSON-indholdet som registerResponse 
+            if (result is not null) // Hvis vi får et objekt 
             {
-                message = result.Message;
-                generatedPassword = result.Password;
-                generatedElevId = result.ElevId;
+                message = result.Message;  // sæt message, der fulgte med fra backend 
+                generatedPassword = result.Password; // overskriv generatedPassword med den der kom fra backend 
+                generatedElevId = result.ElevId; // Hvis der kom et ElevId, sæt generatedElevId
             }
-            newUser = new();   // Nulstil formular
+            newUser = new();   // Nulstil formular-model (nyt objekt, så UI-felterne ryddes)
         }
         else
         {
-            var error = await response.Content.ReadAsStringAsync();
-            message = "Fejl: " + error;
-            generatedPassword = null;
+            var error = await response.Content.ReadAsStringAsync(); // læs fejl-besked fra responsens body
+            message = "Fejl: " + error; // sæt message til at vise fejl 
+            generatedPassword = null; // ryd generatedPassword
         }
     }
 

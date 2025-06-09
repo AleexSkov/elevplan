@@ -108,7 +108,7 @@
 </div> <!-- /dashboard -->
 
 @code {
-    private Elevplan? plan;
+    private Elevplan? plan; // objektet der indeholder hele elevplan 
     private int CompletedCount { get; set; }
     private List<Delmaal> MissingDelmaal { get; set; } = new();
     private List<Delmaal> CompletedDelmaal { get; set; } = new();
@@ -117,12 +117,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // henter elevId fra lokalstorage v
         var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
         if (!string.IsNullOrEmpty(elevId))
         {
+            // Metode: Http.GetFromJsonAsync<Elevplan> 
             plan = await Http.GetFromJsonAsync<Elevplan>($"api/elevplaner/{elevId}");
             if (plan != null)
             {
+                // samler alle delmål i en liste 
                 var alle = plan.Praktikperioder.SelectMany(p => p.Opgaver).ToList();
                 TotalDelmaal = alle.Count;
                 CompletedDelmaal = alle.Where(d => d.Gennemført).ToList();

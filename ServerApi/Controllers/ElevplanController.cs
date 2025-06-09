@@ -8,13 +8,13 @@ namespace ServerApi.Controllers
 {
     [ApiController]
     [Route("api/elevplaner")]
-    public class ElevplanController : ControllerBase
+    public class ElevplanController : ControllerBase 
     {
-        private readonly IElevplan _elevplanService;
+        private readonly IElevplan _elevplanService; // Felt/variable som gemmer det interface der håndterer data (DI)
 
         // Dependency injection af service/repository
-        public ElevplanController(IElevplan elevplanService)
-            => _elevplanService = elevplanService;
+        public ElevplanController(IElevplan elevplanService) // Konstruktør: modtager et objekt der implementerer IElevplan
+            => _elevplanService = elevplanService; // Gemmer det modtagne objekt i feltet
 
         /// <summary>
         /// Returnerer alle elevplaner i systemet.
@@ -22,7 +22,7 @@ namespace ServerApi.Controllers
         /// </summary>
         [HttpGet]
         public async Task<ActionResult<List<Elevplan>>> GetAll()
-            => Ok(await _elevplanService.GetAllAsync());
+            => Ok(await _elevplanService.GetAllAsync()); // kalder metoden GetAllAsync og retunerer listen 
 
         /// <summary>
         /// Henter en specifik elevplan baseret på elevens ID.
@@ -31,7 +31,9 @@ namespace ServerApi.Controllers
         [HttpGet("{elevId}")]
         public async Task<ActionResult<Elevplan?>> GetByElevId(string elevId)
         {
+            // Henter planen for den elev 
             var plan = await _elevplanService.GetByElevIdAsync(elevId);
+            // retunere plan eller 404
             return plan == null ? NotFound() : Ok(plan);
         }
 
@@ -56,20 +58,21 @@ namespace ServerApi.Controllers
         [HttpPost("{elevId}/opgave")]
         public async Task<IActionResult> UpdateOpgave(
             string elevId,
-            [FromBody] UpdateOpgaveRequest req)
+            [FromBody] UpdateOpgaveRequest req) // data fra body kommer ind som objekt
         {
-            await _elevplanService.UpdateOpgaveAsync(
+            await _elevplanService.UpdateOpgaveAsync( // kalder metode der opdaterer opgaven
                 elevId,
                 req.PeriodeNummer,
                 req.Kategori,
                 req.Beskrivelse,
                 req.Gennemført);
-            return NoContent();
+            return NoContent(); 
         }
 
         /// <summary>
         /// Request-body til UpdateOpgave – bruges til at identificere og opdatere ét delmål.
         /// </summary>
+    
        
     }
 }
