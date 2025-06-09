@@ -16,6 +16,8 @@ namespace ServerApi.Controllers
         public ElevplanController(IElevplan elevplanService) // Konstruktør: modtager et objekt der implementerer IElevplan
             => _elevplanService = elevplanService; // Gemmer det modtagne objekt i feltet
 
+        // DashB STEP 2: API modtager GET request og Når data er hentet, 
+        // returnerer vi en HTTP 200 OK response som indeholder listen af elevplaner. (Se ElevplanRepo)
         /// <summary>
         /// Returnerer alle elevplaner i systemet.
         /// Bruges typisk til admin-visning eller eksport.

@@ -23,6 +23,8 @@ namespace ServerApi.Repository
             _elevplanCollection = db.GetCollection<Elevplan>("Elevplan");
         }
 
+        // DashB STEP 3: Bruger MongoDB - Find(_ => true) henter alle dokumenter fra elevplan
+        // Data sendes op til controller -> videre til frontend (Se DashboardAdmin)
         // Henter alle elevplaner fra databasen
         public async Task<List<Elevplan>> GetAllAsync()
             => await _elevplanCollection.Find(_ => true).ToListAsync();

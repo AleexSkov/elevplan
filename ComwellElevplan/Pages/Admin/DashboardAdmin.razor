@@ -51,6 +51,7 @@
     </tr>
     </thead>
     <tbody>
+        <!-- DashB STEP 4: Looper gennem DisplayedElever. Viser navn, Id og status (Se lj. 82) -->
     @foreach (var elev in DisplayedElever)
     {
         <tr>
@@ -76,9 +77,11 @@
     // Liste over alle elevplaner
     private List<Elevplan> elever = new();
 
+    // DashB STEP 5: Admin skriver i searchTerm hvilket på DisplayedElever (Kig på linje: 98-102)
     // Søgeord brugt til filtrering
     private string searchTerm = string.Empty;
 
+    // DashB STEP 6: Når Admin klikker sorter sker der sortering i DisplayedElever (Se også linje 125)
     // Sorteringsflag – hvis true, sorter efter antal gennemførte
     private bool sortByCompleted = false;
 
@@ -87,6 +90,7 @@
     // hvilke elev der vises i modal
     private string selectedId = string.Empty;
 
+    // DashB STEP 5: Kun elever hvis navn matcher searchTerm bliver vist. (Se linje 86)
     /// <summary>
     /// Filtrerer og sorterer elevplaner ud fra søgning, sortering og udelukker ElevId = 1.
     /// </summary>
@@ -98,8 +102,10 @@
              || e.ElevNavn.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
         )
         .OrderByDescending(e => sortByCompleted ? TotalCompleted(e) : 0)
-        .ThenBy(e => sortByCompleted ? string.Empty : e.ElevNavn);
+        .ThenBy(e => sortByCompleted ? string.Empty : e.ElevNavn); 
+        // Hvis sortByCompleted == true sorter efter flest gennemført ellers alfabetisk (Se linje 121)
 
+    // DashB STEP 1: HTTP kalder API og gemmer svaret i elever. (Se Elevplancontroller)
     /// <summary>
     /// Henter alle elevplaner fra API ved første indlæsning.
     /// </summary>
@@ -108,6 +114,7 @@
         elever = await Http.GetFromJsonAsync<List<Elevplan>>("/api/elevplaner");
     }
 
+    // DashB STEP 7: Samler alle opgaver og tæller hvor mange er gennemført - vise i tabellen under "Gennemført" 
     /// <summary>
     /// Beregner hvor mange delmål der er gennemført for en elev.
     /// </summary>
