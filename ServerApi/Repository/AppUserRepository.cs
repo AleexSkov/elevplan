@@ -10,7 +10,7 @@ namespace ServerApi.Repository
 {
     public class AppUserRepository : IAppUser
     {
-        private readonly IMongoCollection<AppUser> _appUserCollection;
+        private readonly IMongoCollection<AppUser> _appUserCollection; 
 
         public AppUserRepository()
         {
@@ -26,6 +26,7 @@ namespace ServerApi.Repository
             _appUserCollection = db.GetCollection<AppUser>("AppUsers");
         }
 
+        
         // Henter alle brugere fra databasen
         public async Task<List<AppUser>> GetAllAsync()
             => await _appUserCollection.Find(_ => true).ToListAsync();
@@ -43,9 +44,9 @@ namespace ServerApi.Repository
         // Opretter en ny bruger i databasen
         public async Task CreateAsync(AppUser user)
         {
-            user.CreatedAt = DateTime.UtcNow; // Sætter oprettelsesdato
-            await _appUserCollection.InsertOneAsync(user);
-        }
+            user.CreatedAt = DateTime.UtcNow; // Sætter oprettelsesdato 
+            await _appUserCollection.InsertOneAsync(user); // indsæt user-objektet som dokument i samling 
+        } 
 
         // Tjekker om en e-mail allerede findes i databasen
         public async Task<bool> EmailExistsAsync(string email)

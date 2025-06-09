@@ -109,8 +109,8 @@
 </div> <!-- /.elevplan-container -->
 
 @code {
-    private Elevplan? plan;                              // Hele elevens praktikplan
-    private Praktikperiode? selectedPeriod;              // Den valgte praktikperiode
+    private Elevplan? plan; // Hele elevens praktikplan
+    private Praktikperiode? selectedPeriod; // Den valgte praktikperiode
 
     /// <summary>
     /// Henter elevens elevplan ud fra id, som er gemt i localStorage.
@@ -121,7 +121,9 @@
         var elevId = await JS.InvokeAsync<string>("localStorage.getItem", "elevId");
         if (!string.IsNullOrEmpty(elevId))
         {
+            // Hent elevplan og gen i plan
             plan = await Http.GetFromJsonAsync<Elevplan>($"/api/elevplaner/{elevId}");
+            // vælg første periode
             selectedPeriod = plan?.Praktikperioder.FirstOrDefault();
         }
     }
@@ -131,8 +133,10 @@
     /// </summary>
     private void OnPeriodChanged(ChangeEventArgs e)
     {
+        // konvtere det valgte dropdown-værdi til et heltal
         if (int.TryParse(e.Value?.ToString(), out var num))
         {
+            // find og vælg den pp med samme pn som valgte tal
             selectedPeriod = plan?.Praktikperioder.FirstOrDefault(p => p.PeriodeNummer == num);
         }
     }

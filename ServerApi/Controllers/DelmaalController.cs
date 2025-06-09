@@ -11,12 +11,11 @@ namespace ServerApi.Controllers
     [Route("api/elevplaner/{elevId}/perioder/{periodeNummer}/delmaal")]
     public class DelmaalController : ControllerBase
     {
-        private readonly IElevplan _repository;
-
-        // Dependency injection af elevplan repository
-        public DelmaalController(IElevplan repository)
+        private readonly IElevplan _repository; //et interface-felt til at hente og gemme data om elevplaner 
+        
+        public DelmaalController(IElevplan repository) 
         {
-            _repository = repository;
+            _repository = repository;  // DI: injection af et objekt, der implementerer IElevplan
         }
 
         /// <summary>
@@ -35,6 +34,7 @@ namespace ServerApi.Controllers
         [HttpGet("{delmaalId}")]
         public async Task<ActionResult<Delmaal>> Get(string elevId, int periodeNummer, Guid delmaalId)
         {
+            // kald repositpry for at hente et delmaal-objekt med det specifikke delmål
             var delmaal = await _repository.GetDelmaalAsync(elevId, periodeNummer, delmaalId);
             if (delmaal == null)
             {
@@ -49,8 +49,9 @@ namespace ServerApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Delmaal>> Post(string elevId, int periodeNummer, [FromBody] Delmaal delmaal)
         {
+            // kalder repository for at oprette/føre et nyt delmaal til databasen
             var created = await _repository.AddDelmaalAsync(elevId, periodeNummer, delmaal);
-            return CreatedAtAction(nameof(Get), new { elevId, periodeNummer, delmaalId = created.DelmaalId }, created);
+            return CreatedAtAction(nameof(Get), new { elevId, periodeNummer, delmaalId = created.DelmaalId }, created); // retunerer det oprettede delmål-objekt
         }
 
         /// <summary>
@@ -59,6 +60,7 @@ namespace ServerApi.Controllers
         [HttpPut("{delmaalId}")]
         public async Task<IActionResult> Put(string elevId, int periodeNummer, Guid delmaalId, [FromBody] Delmaal updated)
         {
+            // kalder repo for at opdatere delmålet i databasen
             var result = await _repository.UpdateDelmaalAsync(elevId, periodeNummer, delmaalId, updated);
             if (result == null)
             {

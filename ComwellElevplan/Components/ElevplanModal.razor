@@ -106,44 +106,59 @@
 </div>
 
 @code {
+  
   [Parameter] public string ElevId { get; set; } = default!;
   [Parameter] public bool IsAdmin { get; set; }
   [Parameter] public EventCallback OnClose { get; set; }
-
-  /// <summary>Elevplan med praktikperioder og delmål/opgaver</summary>
+  /// <summary>
+  /// Elevplan med praktikperioder og delmål/opgaver
+  /// </summary>
   private Elevplan? Elevplan;
 
-  /// <summary>ID på det delmål der redigeres lige nu</summary>
+  /// <summary>
+  /// ID på det delmål der redigeres lige nu
+  /// </summary>
   private Guid? editingId;
 
-  /// <summary>Midlertidig kopi af det delmål der redigeres</summary>
+  /// <summary>
+  /// Midlertidig kopi af det delmål der redigeres
+  /// </summary>
   private Delmaal editingDelmaal = new Delmaal();
 
-  /// <summary>Model til oprettelse af nyt delmål</summary>
+  /// <summary>
+  /// Model til oprettelse af nyt delmål
+  /// </summary>
   private Delmaal newDelmaal = new Delmaal();
 
-  /// <summary>Dynamisk titel afhængigt af om elevplan er indlæst</summary>
+  /// <summary>
+  /// Dynamisk titel afhængigt af om elevplan er indlæst
+  /// </summary>
   private string Title => Elevplan == null ? "Indlæser…" : $"Elevplan for {Elevplan.ElevNavn}";
 
-  /// <summary>Henter elevplanens data fra API baseret på elevens ID</summary>
+  /// <summary>
+  ///Henter elevplanens data fra API baseret på elevens ID
+  /// </summary>
   protected override async Task OnParametersSetAsync()
   {
     Elevplan = await Http.GetFromJsonAsync<Elevplan>($"/api/elevplaner/{ElevId}");
     editingId = null;
   }
 
-  /// <summary>Skifter mellem gennemført/ikke gennemført på checkbox</summary>
+  /// <summary>
+  /// Skifter mellem gennemført/ikke gennemført på checkbox
+  ///   </summary>
   private async Task Toggle(Delmaal d, int pNum)
   {
     if (!IsAdmin) return;
     d.Gennemført = !d.Gennemført;
     await Http.PutAsJsonAsync($"/api/elevplaner/{ElevId}/perioder/{pNum}/delmaal/{d.DelmaalId}", d);
   }
-
-  /// <summary>Starter redigering af et delmål ved at kopiere dets data</summary>
+  /// <summary>
+  /// Starter redigering af et delmål ved at kopiere dets data
+  /// </summary>
   private void StartEdit(Delmaal d)
   {
-    editingId = d.DelmaalId;
+    editingId = d.DelmaalId; 
     editingDelmaal = new Delmaal
     {
       DelmaalId  = d.DelmaalId,
@@ -156,10 +171,14 @@
     };
   }
 
-  /// <summary>Annullerer redigering og nulstiller ID</summary>
+  /// <summary>
+  /// Annullerer redigering og nulstiller ID
+  /// </summary>
   private void CancelEdit() => editingId = null;
 
-  /// <summary>Gemmer ændringer på det redigerede delmål til API'et</summary>
+  /// <summary>
+  /// Gemmer ændringer på det redigerede delmål til API'et
+  /// </summary>
   private async Task SaveEdit()
   {
     if (Elevplan == null || editingId == null) return;
@@ -168,7 +187,9 @@
     editingId = null;
   }
 
-  /// <summary>Tilføjer nyt delmål via API'et og opdaterer visning</summary>
+  /// <summary>
+  /// Tilføjer nyt delmål via API'et og opdaterer visning
+  /// </summary>
   private async Task AddDelmaal(int pNum)
   {
     if (!IsAdmin) return;
@@ -181,8 +202,9 @@
       newDelmaal = new Delmaal();
     }
   }
-
-  /// <summary>Sletter et delmål via API og fjerner det fra listen</summary>
+  /// <summary>
+  ///Sletter et delmål via API og fjerner det fra listen
+  /// </summary>
   private async Task DeleteDelmaal(Delmaal d, int pNum)
   {
     if (!IsAdmin) return;
@@ -190,7 +212,8 @@
     if (res.IsSuccessStatusCode)
       Elevplan!.Praktikperioder.First(p => p.PeriodeNummer == pNum).Opgaver.Remove(d);
   }
-
-  /// <summary>Lukker modalvinduet og udløser OnClose event</summary>
+  /// <summary>
+  ///Lukker modalvinduet og udløser OnClose event
+  /// </summary>
   private Task Close() => OnClose.InvokeAsync();
 }
